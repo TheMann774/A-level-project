@@ -16,7 +16,9 @@ def heroku_upload():
         "path", 
         "link", 
         "num_products",
-        "date_updated")
+        "date_updated",
+        "products_scraped",
+        "required")
                     VALUES {}'''.format(records_list_template)
 
     conn = postgres_connect()
@@ -32,7 +34,7 @@ bad_urls = []
 soup = bs(page.content, "html.parser")
 all_sectors = soup.find('ul', id='megaNavLevelOne').find_all('li')[3:]
 all_sectors = [[[x.a.text.strip()], x.a['href']] for x in all_sectors]
-leaf_sectors = pd.DataFrame(columns=['name', 'path', 'link', 'num_products', 'date_updated'])
+leaf_sectors = pd.DataFrame(columns=['name', 'path', 'link', 'num_products', 'date_updated', 'products_scraped', 'required'])
 print(all_sectors)
 for depth in ['departments', 'aisles', 'shelf']:
     print()
@@ -73,8 +75,15 @@ for depth in ['departments', 'aisles', 'shelf']:
                 print('appended')
             time.sleep(1)
     all_sectors = new_sectors
+
+
+
 for sector in all_sectors:
-    leaf_sectors = leaf_sectors.append({'name': sector[0][-1], 'path': '>'.join(sector[0]), 'link': sector[1], 'num_products': 0,
-                         'date_updated': date.today().strftime('%d-%m-%Y')}, ignore_index=True)
+    query_text = '''SELECT path FROM sainsburys_sectors
+    WHERE path = **path**'''.replace('**path**','>'.join(sector[0]))
+    result = postgres_execute(query_text)
+    if len(result) == 0:
+        leaf_sectors = leaf_sectors.append({'name': sector[0][-1], 'path': '>'.join(sector[0]), 'link': sector[1], 'num_products': 0,
+                             'date_updated': date.today().strftime('%d-%m-%Y'), 'products_scraped': 0, 'required': 1}, ignore_index=True)
 
 #heroku_upload()
