@@ -27,3 +27,33 @@ def heroku_upload():
     conn.commit()
 
 
+num_sectors = 5
+
+query_text = '''
+SELECT name, path, link FROM sainsburys_sectors
+WHERE required = 1
+ORDER BY products_scraped ASC, date_updated ASC, num_products DESC
+'''
+result = postgres_execute(query_text)
+
+for i in range(min(num_sectors, len(result))):
+    sector = result.iloc[i]
+    URL = sector['link']
+    if 'https://www.sainsburys.co.uk' not in URL:
+        URL = 'https://www.sainsburys.co.uk/' + URL
+    page = requests.get(URL)
+    soup = bs(page.content, "html.parser")
+    pages_left = True
+    all_products = []
+    while pages_left:
+        all_products += [x.h3.a['href'] for x in soup.find_all('div', class_='productNameAndPromotions')]
+        if soup.find('li', class_='next') is None:
+            pages_left = False
+        elif soup.find('li', class_='next').a is None:
+            pages_left = False
+        else:
+            URL = soup.find('li', class_='next').a['href']
+            if 'https://www.sainsburys.co.uk' not in URL:
+                URL = 'https://www.sainsburys.co.uk/' + URL
+            page = requests.get(URL)
+            soup = bs(page.content, "html.parser")

@@ -82,16 +82,17 @@ ALTER "uuid" SET DEFAULT uuid_generate_v4 ()
     '''
 result = postgres_execute(sql_text)
 """
-"""
+
+
 sql_text = '''
 ALTER TABLE sainsburys_sectors
-ADD products_scraped int, required int
+ADD required int
 '''
 result = postgres_execute(sql_text)
 
 sql_text = '''
 UPDATE sainsburys_sectors
-SET products_scraped = 0, required = 1
+SET required = 1
 '''
 result = postgres_execute(sql_text)
-"""
+

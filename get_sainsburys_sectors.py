@@ -71,7 +71,7 @@ for depth in ['departments', 'aisles', 'shelf']:
                 for new_link in new.find_all('li'):
                     new_sectors.append([sector[0]+[new_link.a.text.strip()], new_link.a['href']])
             else:
-                leaf_sectors = leaf_sectors.append({'name':sector[0][-1], 'path':'>'.join(sector[0]), 'link':sector[1], 'num_products':0, 'date_updated':date.today().strftime('%d-%m-%Y')}, ignore_index=True)
+                leaf_sectors = leaf_sectors.append({'name':sector[0][-1], 'path':'>'.join(sector[0]), 'link':URL, 'num_products':0, 'date_updated':date.today().strftime('%d-%m-%Y')}, ignore_index=True)
                 print('appended')
             time.sleep(1)
     all_sectors = new_sectors
