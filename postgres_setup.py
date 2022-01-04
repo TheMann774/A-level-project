@@ -70,6 +70,33 @@ CREATE TABLE "sainsburys_sectors" (
 result = postgres_execute(sql_text)
 """
 
+sql_text = '''
+CREATE TABLE "sainsburys_products" (
+    "uuid" uuid DEFAULT uuid_generate_v4 (),
+    "name" varchar,
+    "price" float,
+    "date_updated" varchar,
+    "url" varchar,
+    "sector_id" uuid,
+    "rating" float,
+    "num_reviews" int,
+    "expiry_duration" int,
+    "vegetarian" int,
+    "vegan" int,
+    "religious_info" varchar,
+    "organic" int,
+    "description" varchar,
+    "nutrition_100" varchar,
+    "pack_servings" int,
+    "mass" float,
+    "ingredients" varchar,
+    "allergens" varchar,
+    "info" varchar,
+    "cook_info" varchar,
+    "origin_country" varchar,
+    "recycling" varchar
+'''
+
 #CHANGE COLUMN TO DEFAULT UUID
 """
 sql_text = '''
@@ -83,7 +110,7 @@ ALTER "uuid" SET DEFAULT uuid_generate_v4 ()
 result = postgres_execute(sql_text)
 """
 
-
+"""
 sql_text = '''
 ALTER TABLE sainsburys_sectors
 ADD required int
@@ -95,4 +122,5 @@ UPDATE sainsburys_sectors
 SET required = 1
 '''
 result = postgres_execute(sql_text)
+"""
 
