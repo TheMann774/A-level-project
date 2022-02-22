@@ -27,12 +27,9 @@ tens = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eight
 def initialise_chrome():
     chrome_options = Options()
     chrome_options.headless = True
-    # driver = webdriver.Chrome('C:\Program Files (x86)\Google\ChromeDriver\\chromedriver.exe',options=chrome_options)
     driver = webdriver.Chrome(ChromeDriverManager().install())
-
     # driver.maximize_window()  #if not headless
-    return (driver)
-
+    return driver
 
 def accept_cookies(driver):
     # try to accept cookies
@@ -47,11 +44,11 @@ def accept_cookies(driver):
             # non interactive elements will throw an exception
             pass
     time.sleep(0.5)
-
     return
 
 
 def heroku_upload():
+    """upload database of new-found products to heroku"""
     print("uploading", len(new_products), "rows to heroku")
     records = new_products.itertuples(index=False)
     result = list(records)
@@ -86,7 +83,7 @@ def heroku_upload():
     cur = conn.cursor()
     cur.execute(insert_query, result)
     conn.commit()
-
+    print("rows uploaded")
 
 num_sectors = 1
 
@@ -123,6 +120,7 @@ new_products = pd.DataFrame(columns=["name",
 # SORT OUT SORTING BY DATE, DATE IS STRING
 
 for i in range(min(num_sectors, len(result))):
+    new_products = new_products[0:0]
     sector = result.iloc[i]
     URL = sector['link']
     if 'https://www.sainsburys.co.uk' not in URL:
@@ -145,8 +143,7 @@ for i in range(min(num_sectors, len(result))):
             soup = bs(page.content, "html.parser")
     if not len(all_products):
         sql_text = '''
-        UPDATE sainsburys_sectors
-        SET required = 0
+        DELETE FROM sainsburys_sectors
         WHERE path = '**path**'
         '''.replace('**path**', sector['path'])
         _ = postgres_execute(sql_text)
@@ -195,7 +192,7 @@ for i in range(min(num_sectors, len(result))):
             except:
                 new_product['num_reviews'] = 0
 
-            new_product['expiry duration'] = 0
+            new_product['expiry_duration'] = 0
 
             if len(soup.find_all(text=[re.compile('Not suitable for vegetarians', re.IGNORECASE),
                                        re.compile('Not vegetarian', re.IGNORECASE)])):
@@ -244,7 +241,7 @@ for i in range(min(num_sectors, len(result))):
             colserving = -1
             nutrition_cols = soup.find('table', class_='nutritionTable').thead.tr.find_all('th')
             for i in range(1, len(nutrition_cols)):
-                if re.match("(per|/) ?100g", str.lower(nutrition_cols[i].text)) and 'ri' not in str.lower(
+                if re.search("100 ?(g|ml)", str.lower(nutrition_cols[i].text)) and 'ri' not in str.lower(
                         nutrition_cols[i].text) and col100 == -1:
                     col100 = i - 1
                 if 'serving' in str.lower(nutrition_cols[i].text) and 'ri' not in str.lower(
@@ -260,10 +257,10 @@ for i in range(min(num_sectors, len(result))):
                 except:
                     try:
                         new_product['nutrition_100']['Energy'] = float(
-                            re.findall("[0-9]+kcal", rows[0].find_all('td')[col100].text)[0][:-4])
+                            re.findall("[0-9]+ ?kcal", rows[0].find_all('td')[col100].text)[0][:-4])
                         if colserving != -1:
                             serving_size = 0.1 * float(
-                                re.findall("[0-9]+kcal", rows[0].find_all('td')[colserving].text)[0][:-4]) / \
+                                re.findall("[0-9]+ ?kcal", rows[0].find_all('td')[colserving].text)[0][:-4]) / \
                                            new_product['nutrition_100']['Energy']
                     except:
                         new_product['nutrition_100']['Energy'] = float(
@@ -332,13 +329,17 @@ for i in range(min(num_sectors, len(result))):
                         mass = re.search("[0-9]+x[0-9.]+", re.search(" [0-9]+x[0-9]*.?[0-9]+(g|ml)",
                                                                      soup.find('h1', class_='pd__header').text).group(
                             0)).group(0).split('x')
-                        new_product['mass'] = mass[0] * mass[1] / 1000
+                        new_product['mass'] = float(mass[0]) * float(mass[1]) / 1000
+                        if not new_product['pack_servings']:
+                            new_product['pack_servings'] = int(mass[0])
                     except:
                         try:
                             mass = re.search("[0-9]+x[0-9.]+", re.search(" [0-9]+x[0-9]*.?[0-9]+(kg|l)", soup.find('h1',
                                                                                                                    class_='pd__header').text).group(
                                 0)).group(0).split('x')
-                            new_product['mass'] = mass[0] * mass[1]
+                            new_product['mass'] = float(mass[0]) * float(mass[1])
+                            if not new_product['pack_servings']:
+                                new_product['pack_servings'] = int(mass[0])
                         except:
                             if new_product['pack_servings'] != 0:
                                 try:
@@ -449,11 +450,19 @@ for i in range(min(num_sectors, len(result))):
 
             new_products = new_products.append(new_product, ignore_index=True)
     driver.close()
+    """
     heroku_upload()
     query_text = '''
     DELETE FROM sainsburys_products
     WHERE sector_id = **sector_id**
     AND date_updated <> **date**
     '''.replace('**date**', date.today().strftime('%d-%m-%Y')).replace('**sector_id**', sector['uuid'])
-    result = postgres_execute(query_text)
-    ##Need to change info in sainsburys_sectors
+    _ = postgres_execute(query_text)
+
+    query_text = '''
+    UPDATE sainsburys_sectors
+    SET products_scraped = 1, num_products = **num_products**, date_updated = **date**
+    WHERE path = '**path**'
+    '''.replace('**path**', sector['path']).replace('**num_products**', str(len(new_products))).replace('**date**', date.today().strftime('%d-%m-%Y'))
+    _ = postgres_execute(query_text)
+    """

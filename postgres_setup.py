@@ -69,7 +69,7 @@ CREATE TABLE "sainsburys_sectors" (
     '''
 result = postgres_execute(sql_text)
 """
-
+"""
 sql_text = '''
 CREATE TABLE "sainsburys_products" (
     "uuid" uuid DEFAULT uuid_generate_v4 (),
@@ -94,9 +94,10 @@ CREATE TABLE "sainsburys_products" (
     "info" varchar,
     "cook_info" varchar,
     "origin_country" varchar,
-    "recycling" varchar
+    "recycling" varchar)
 '''
-
+result = postgres_execute(sql_text)
+"""
 #CHANGE COLUMN TO DEFAULT UUID
 """
 sql_text = '''
@@ -123,4 +124,9 @@ SET required = 1
 '''
 result = postgres_execute(sql_text)
 """
+
+
+sql_text = """
+DELETE FROM sainsburys_sectors"""
+result = postgres_execute(sql_text)
 

@@ -1,6 +1,7 @@
 import psycopg2
 import pandas as pd
 
+
 def postgres_connect():
     PG_DBNAME = 'dflk6gukmji6li'
     PG_USER = 'xvfgvajqxphekv'
@@ -11,7 +12,7 @@ def postgres_connect():
 
     try:
         conn = psycopg2.connect(connect_text)
-        conn.set_session(readonly=False)  ##*******WRITE-ENABLED CONNECTION*******
+        conn.set_session(readonly=False)  # *******WRITE-ENABLED CONNECTION*******
         return conn
     except psycopg2.Error as e:
         error_info = str(e)

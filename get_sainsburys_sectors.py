@@ -1,13 +1,14 @@
 import requests
 from bs4 import BeautifulSoup as bs
 import pandas as pd
-from Heroku_functions import postgres_execute, postgres_update, postgres_connect
+from Heroku_functions import postgres_execute, postgres_connect
 from datetime import date
 import time
 
 def heroku_upload():
-    print("uploading", len(leaf_sectors), "rows to heroku")
-    records = leaf_sectors.itertuples(index=False)
+    """upload database of new-found sectors to heroku"""
+    print("uploading", len(new_leafs), "rows to heroku")
+    records = new_leafs.itertuples(index=False)
     result = list(records)
     records_list_template = ','.join(['%s'] * len(result))
 
@@ -26,16 +27,25 @@ def heroku_upload():
     cur.execute(insert_query, result)
     conn.commit()
 
+#Get Sainsbury's home page
 URL = 'https://www.sainsburys.co.uk/shop/gb/groceries'
-
 page = requests.get(URL)
 bad_urls = []
 
+#Get HTML
 soup = bs(page.content, "html.parser")
+
+#Get level 1 sectors
 all_sectors = soup.find('ul', id='megaNavLevelOne').find_all('li')[3:]
 all_sectors = [[[x.a.text.strip()], x.a['href']] for x in all_sectors]
+
+#Create dataframe of leaf sectors
+#Leaf sector is a sector without any subsectors
 leaf_sectors = pd.DataFrame(columns=['name', 'path', 'link', 'num_products', 'date_updated', 'products_scraped', 'required'])
+new_leafs = leaf_sectors.copy()
+
 print(all_sectors)
+#Get subsectors of all current sectors
 for depth in ['departments', 'aisles', 'shelf']:
     print()
     print('looking for', depth, 'in', len(all_sectors), 'places')
@@ -46,6 +56,7 @@ for depth in ['departments', 'aisles', 'shelf']:
         if 'sainsburys.co.uk' not in URL:
             URL = 'https://www.sainsburys.co.uk' + URL
 
+        #Load page
         reboots = 0
         bad_url = False
         accessed = False
@@ -53,7 +64,7 @@ for depth in ['departments', 'aisles', 'shelf']:
             try:
                 page = requests.get(URL)
                 accessed = True
-            except ConnectionError:
+            except:
                 if reboots < 3:
                     print("Remote Disconnect, rebooting...")
                     time.sleep(200)
@@ -63,6 +74,7 @@ for depth in ['departments', 'aisles', 'shelf']:
                     accessed = True
                     bad_url = True
                     bad_urls.append(URL)
+
         if not bad_url:
             soup = bs(page.content, "html.parser")
             new = soup.find_all('ul', class_=depth)
@@ -71,19 +83,27 @@ for depth in ['departments', 'aisles', 'shelf']:
                 for new_link in new.find_all('li'):
                     new_sectors.append([sector[0]+[new_link.a.text.strip()], new_link.a['href']])
             else:
-                leaf_sectors = leaf_sectors.append({'name':sector[0][-1], 'path':'>'.join(sector[0]), 'link':URL, 'num_products':0, 'date_updated':date.today().strftime('%d-%m-%Y')}, ignore_index=True)
+                leaf_sectors = leaf_sectors.append({'name':sector[0][-1], 'path':'>'.join(sector[0]), 'link':URL, 'num_products':0, 'date_updated':date.today().strftime('%Y-%m-%d'), 'products_scraped': 0, 'required': 1}, ignore_index=True)
                 print('appended')
             time.sleep(1)
     all_sectors = new_sectors
 
+query_text = '''SELECT path FROM sainsburys_sectors'''
+previous_paths = list(postgres_execute(query_text)['path'])
 
+for path in previous_paths:
+    if path not in list(leaf_sectors['path']):
+        query_text = '''DELETE from sainsburys_sectors WHERE path=**path**'''.replace('**path**',path)
+        _ = postgres_execute(query_text)
 
-for sector in all_sectors:
-    query_text = '''SELECT path FROM sainsburys_sectors
-    WHERE path = **path**'''.replace('**path**','>'.join(sector[0]))
-    result = postgres_execute(query_text)
-    if len(result) == 0:
-        leaf_sectors = leaf_sectors.append({'name': sector[0][-1], 'path': '>'.join(sector[0]), 'link': sector[1], 'num_products': 0,
-                             'date_updated': date.today().strftime('%d-%m-%Y'), 'products_scraped': 0, 'required': 1}, ignore_index=True)
+for index, sector in leaf_sectors.iterrows():
+    if sector['path'] not in previous_paths:
+        new_leafs = new_leafs.append(sector)
+                             
+#upload to heroku
+heroku_upload()
 
-#heroku_upload()
+sql_text = '''UPDATE sainsburys_sectors
+SET real_date_updated = CAST(date_updated AS DATE)'''
+_ = postgres_execute(sql_text)
+
