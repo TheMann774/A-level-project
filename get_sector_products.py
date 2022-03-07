@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup as bs
 import pandas as pd
-from Heroku_functions import postgres_execute, postgres_update, postgres_connect
+from Heroku_functions import postgres_execute, postgres_connect
 from datetime import date
 import time
 import re
@@ -85,12 +85,11 @@ def heroku_upload():
     conn.commit()
     print("rows uploaded")
 
-num_sectors = 1
-
+num_sectors = 5
 query_text = '''
 SELECT uuid, name, path, link FROM sainsburys_sectors
 WHERE required = 1
-ORDER BY products_scraped ASC, date_updated ASC, num_products DESC
+ORDER BY products_scraped ASC, real_date_updated ASC, num_products DESC
 '''
 result = postgres_execute(query_text)
 
@@ -117,7 +116,6 @@ new_products = pd.DataFrame(columns=["name",
                                      "origin_country",
                                      "recycling"])
 
-# SORT OUT SORTING BY DATE, DATE IS STRING
 
 for i in range(min(num_sectors, len(result))):
     new_products = new_products[0:0]
@@ -149,6 +147,7 @@ for i in range(min(num_sectors, len(result))):
         _ = postgres_execute(sql_text)
     else:
         driver = initialise_chrome()
+        print(sector['name'])
         for product in all_products:
             time.sleep(1)
             counter = 0
@@ -174,15 +173,18 @@ for i in range(min(num_sectors, len(result))):
 
             new_product = {}
             new_product['name'] = soup.find('h1', class_="pd__header").text
-            new_product['date_updated'] = date.today().strftime('%d-%m-%Y')
+            new_product['date_updated'] = date.today().strftime('%Y-%m-%d')
             new_product['url'] = product
             new_product['sector_id'] = sector['uuid']
 
             new_product['price'] = soup.find('div', class_="pd__cost").div.text
+            if '/' in new_product['price'] and 'kg' in new_product:
+                new_product['mass'] = 1
             if '£' in new_product['price']:
-                new_product['price'] = float(new_product['price'][1:])
+                new_product['price'] = float(new_product['price'][1:].replace(' ','').replace('/','').replace('kg',''))
             else:
-                new_product['price'] = float(new_product['price'][:-1]) / 100
+                new_product['price'] = float(new_product['price'][:-1].replace(' ','').replace('/','').replace('kg','')) / 100
+
 
             new_product['rating'] = float(
                 len(soup.find('div', class_='star-rating').find_all('path', class_="star-rating-icon--full")))
@@ -239,42 +241,50 @@ for i in range(min(num_sectors, len(result))):
             new_product['nutrition_100'] = {}
             col100 = -1
             colserving = -1
-            nutrition_cols = soup.find('table', class_='nutritionTable').thead.tr.find_all('th')
-            for i in range(1, len(nutrition_cols)):
-                if re.search("100 ?(g|ml)", str.lower(nutrition_cols[i].text)) and 'ri' not in str.lower(
-                        nutrition_cols[i].text) and col100 == -1:
-                    col100 = i - 1
-                if 'serving' in str.lower(nutrition_cols[i].text) and 'ri' not in str.lower(
-                        nutrition_cols[i].text) and colserving == -1:
-                    colserving = i - 1
-            if col100 != -1:
-                rows = soup.find('table', class_='nutritionTable').tbody.find_all('tr')
-                try:
-                    new_product['nutrition_100']['Energy'] = float(rows[1].find_all('td')[col100].text.split('kcal')[0])
-                    if colserving != -1:
-                        serving_size = 0.1 * float(rows[1].find_all('td')[colserving].text.split('kcal')[0]) / \
-                                       new_product['nutrition_100']['Energy']
-                except:
+            try:
+                nutrition_cols = soup.find('table', class_='nutritionTable').thead.tr.find_all('th')
+                for i in range(1, len(nutrition_cols)):
+                    if re.search("100 ?(g|ml)", str.lower(nutrition_cols[i].text)) and 'ri' not in str.lower(
+                            nutrition_cols[i].text) and col100 == -1:
+                        col100 = i - 1
+                    if 'serving' in str.lower(nutrition_cols[i].text) and 'ri' not in str.lower(
+                            nutrition_cols[i].text) and colserving == -1:
+                        colserving = i - 1
+                if col100 != -1:
+                    rows = soup.find('table', class_='nutritionTable').tbody.find_all('tr')
                     try:
-                        new_product['nutrition_100']['Energy'] = float(
-                            re.findall("[0-9]+ ?kcal", rows[0].find_all('td')[col100].text)[0][:-4])
+                        new_product['nutrition_100']['Energy'] = float(rows[1].find_all('td')[col100].text.split('kcal')[0])
                         if colserving != -1:
-                            serving_size = 0.1 * float(
-                                re.findall("[0-9]+ ?kcal", rows[0].find_all('td')[colserving].text)[0][:-4]) / \
+                            serving_size = 0.1 * float(rows[1].find_all('td')[colserving].text.split('kcal')[0]) / \
                                            new_product['nutrition_100']['Energy']
                     except:
-                        new_product['nutrition_100']['Energy'] = float(
-                            rows[0].find_all('td')[col100].text.replace(' ', '').replace('\n', '').split('/')[1])
-                        if colserving != -1:
-                            serving_size = 0.1 * float(
-                                rows[0].find_all('td')[colserving].text.replace(' ', '').replace('\n', '').split('/')[
-                                    1]) / new_product['nutrition_100']['Energy']
-                for row in rows[2:]:
-                    try:
-                        new_product['nutrition_100'][row.th.text] = float(row.find_all('td')[col100].text.split('g')[0])
-                    except:
-                        pass
+                        try:
+                            new_product['nutrition_100']['Energy'] = float(
+                                re.findall("[0-9]+ ?kcal", rows[0].find_all('td')[col100].text)[0][:-4])
+                            if colserving != -1:
+                                serving_size = 0.1 * float(
+                                    re.findall("[0-9]+ ?kcal", rows[0].find_all('td')[colserving].text)[0][:-4]) / \
+                                               new_product['nutrition_100']['Energy']
+                        except:
+                            try:
+                                new_product['nutrition_100']['Energy'] = float(
+                                    rows[0].find_all('td')[col100].text.replace(' ', '').replace('\n', '').split('/')[1])
+                                if colserving != -1:
+                                    serving_size = 0.1 * float(
+                                        rows[0].find_all('td')[colserving].text.replace(' ', '').replace('\n', '').split('/')[
+                                            1]) / new_product['nutrition_100']['Energy']
+                            except:
+                                pass
+                    for row in rows[2:]:
+                        try:
+                            new_product['nutrition_100'][row.th.text] = float(row.find_all('td')[col100].text.split('g')[0])
+                        except:
+                            pass
+            except Exception as e:
+                print(e)
             new_product['nutrition_100'] = str(new_product['nutrition_100'])
+
+
 
             new_product['pack_servings'] = 0
             servings = soup.find(text=re.compile("Contains .+ servings", re.IGNORECASE))
@@ -450,19 +460,25 @@ for i in range(min(num_sectors, len(result))):
 
             new_products = new_products.append(new_product, ignore_index=True)
     driver.close()
-    """
     heroku_upload()
     query_text = '''
     DELETE FROM sainsburys_products
-    WHERE sector_id = **sector_id**
-    AND date_updated <> **date**
-    '''.replace('**date**', date.today().strftime('%d-%m-%Y')).replace('**sector_id**', sector['uuid'])
+    WHERE sector_id = '**sector_id**'
+    AND date_updated <> '**date**'
+    '''.replace('**date**', date.today().strftime('%Y-%m-%d')).replace('**sector_id**', sector['uuid'])
     _ = postgres_execute(query_text)
 
     query_text = '''
     UPDATE sainsburys_sectors
-    SET products_scraped = 1, num_products = **num_products**, date_updated = **date**
+    SET products_scraped = 1, num_products = **num_products**, date_updated = '**date**'
     WHERE path = '**path**'
-    '''.replace('**path**', sector['path']).replace('**num_products**', str(len(new_products))).replace('**date**', date.today().strftime('%d-%m-%Y'))
+    '''.replace('**path**', sector['path']).replace('**num_products**', str(len(new_products))).replace('**date**', date.today().strftime('%Y-%m-%d'))
     _ = postgres_execute(query_text)
-    """
+
+    sql_text = '''UPDATE sainsburys_sectors
+    SET real_date_updated = CAST(date_updated AS DATE)'''
+    _ = postgres_execute(sql_text)
+
+    sql_text = '''UPDATE sainsburys_products
+    SET real_date_updated = CAST(date_updated AS DATE)'''
+    _ = postgres_execute(sql_text)

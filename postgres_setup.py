@@ -117,16 +117,18 @@ ALTER TABLE sainsburys_sectors
 ADD required int
 '''
 result = postgres_execute(sql_text)
-
-sql_text = '''
-UPDATE sainsburys_sectors
-SET required = 1
-'''
-result = postgres_execute(sql_text)
 """
 
-
-sql_text = """
-DELETE FROM sainsburys_sectors"""
+sql_text = '''
+ALTER TABLE sainsburys_products
+ADD emissions_per_calorie float
+'''
 result = postgres_execute(sql_text)
+
+
+
+"""sql_text = '''
+DELETE FROM sainsburys_products
+'''
+result = postgres_execute(sql_text)"""
 

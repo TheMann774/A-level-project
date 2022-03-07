@@ -57,7 +57,7 @@ style = ttk.Style()
 style.theme_use("default")
 style.configure('Treeview',rowheight=30)
 
-button1 = tk.Button(root, text='Clear', command=lambda:root.clear(), height=40)
+button1 = tk.Button(root, text='Clear', command=lambda:, height=40)
 button1.grid(row=1, column=0, sticky='nsew')
 
 # run the app
