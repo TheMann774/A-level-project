@@ -1,0 +1,8 @@
+CREATE TABLE "sainsburys_sectors" (
+    "uuid" uuid DEFAULT uuid_generate_v4 (),
+    "name" varchar,
+    "path" varchar,
+    "num_products" int,
+    "date_updated" varchar,
+    "link" varchar)
+

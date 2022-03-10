@@ -25,23 +25,23 @@ tens = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eight
 
 
 def initialise_chrome():
+    """Initialise a chrome browser and returns a driver object"""
     chrome_options = Options()
     chrome_options.headless = True
-    driver = webdriver.Chrome(ChromeDriverManager().install())
-    # driver.maximize_window()  #if not headless
-    return driver
+    new_driver = webdriver.Chrome(ChromeDriverManager().install())
+    if chrome_options.headless is False:
+        driver.maximize_window()
+    return new_driver
 
-def accept_cookies(driver):
-    # try to accept cookies
-    els = driver.find_elements_by_xpath("//*[contains(text(), 'Accept')]")
+def accept_cookies(chrome_driver):
+    """try to accept cookies on the page"""
+    elements = chrome_driver.find_elements_by_xpath("//*[contains(text(), 'Accept')]")
 
-    for el in els:
-        print(el.text)
+    for element in elements:
         try:
-            el.send_keys(Keys.RETURN)
+            element.send_keys(Keys.RETURN)
             print('cookie accept victory')
         except:
-            # non interactive elements will throw an exception
             pass
     time.sleep(0.5)
     return
@@ -53,7 +53,6 @@ def heroku_upload():
     records = new_products.itertuples(index=False)
     result = list(records)
     records_list_template = ','.join(['%s'] * len(result))
-
     insert_query = '''INSERT INTO "sainsburys_products" (
         "name",
         "date_updated",
@@ -78,20 +77,20 @@ def heroku_upload():
         "origin_country",
         "recycling")
                     VALUES {}'''.format(records_list_template)
-
     conn = postgres_connect()
     cur = conn.cursor()
     cur.execute(insert_query, result)
     conn.commit()
     print("rows uploaded")
 
-num_sectors = 5
+
 query_text = '''
 SELECT uuid, name, path, link FROM sainsburys_sectors
 WHERE required = 1
 ORDER BY products_scraped ASC, real_date_updated ASC, num_products DESC
 '''
 result = postgres_execute(query_text)
+num_sectors = 5
 
 new_products = pd.DataFrame(columns=["name",
                                      "date_updated",
@@ -124,21 +123,21 @@ for i in range(min(num_sectors, len(result))):
     if 'https://www.sainsburys.co.uk' not in URL:
         URL = 'https://www.sainsburys.co.uk/' + URL
     page = requests.get(URL)
-    soup = bs(page.content, "html.parser")
+    page_soup = bs(page.content, "html.parser")
     pages_left = True
     all_products = []
     while pages_left:
-        all_products += [x.h3.a['href'] for x in soup.find_all('div', class_='productNameAndPromotions')]
-        if soup.find('li', class_='next') is None:
+        all_products += [x.h3.a['href'] for x in page_soup.find_all('div', class_='productNameAndPromotions')]
+        if page_soup.find('li', class_='next') is None:
             pages_left = False
-        elif soup.find('li', class_='next').a is None:
+        elif page_soup.find('li', class_='next').a is None:
             pages_left = False
         else:
-            URL = soup.find('li', class_='next').a['href']
+            URL = page_soup.find('li', class_='next').a['href']
             if 'https://www.sainsburys.co.uk' not in URL:
                 URL = 'https://www.sainsburys.co.uk/' + URL
             page = requests.get(URL)
-            soup = bs(page.content, "html.parser")
+            page_soup = bs(page.content, "html.parser")
     if not len(all_products):
         sql_text = '''
         DELETE FROM sainsburys_sectors
@@ -159,7 +158,7 @@ for i in range(min(num_sectors, len(result))):
                 try:
                     driver.get(product)
                     elem = WebDriverWait(driver, 10).until(
-                        EC.presence_of_element_located((By.CLASS_NAME, "pd__header"))  # This is a dummy element
+                        EC.presence_of_element_located((By.CLASS_NAME, "pd__header"))
                     )
                     found = True
                 except Exception as e:
@@ -169,15 +168,14 @@ for i in range(min(num_sectors, len(result))):
             print("accepting cookies")
             accept_cookies(driver)
             soup_file = driver.page_source
-            soup = bs(soup_file, "html.parser")
+            page_soup = bs(soup_file, "html.parser")
 
-            new_product = {}
-            new_product['name'] = soup.find('h1', class_="pd__header").text
-            new_product['date_updated'] = date.today().strftime('%Y-%m-%d')
-            new_product['url'] = product
-            new_product['sector_id'] = sector['uuid']
+            new_product = {'name': page_soup.find('h1', class_="pd__header").text,
+                           'date_updated': date.today().strftime('%d-%m-%Y'),
+                           'url': product,
+                           'sector_id': sector['uuid'],
+                           'price': page_soup.find('div', class_="pd__cost").div.text}
 
-            new_product['price'] = soup.find('div', class_="pd__cost").div.text
             if '/' in new_product['price'] and 'kg' in new_product:
                 new_product['mass'] = 1
             if '£' in new_product['price']:
@@ -185,46 +183,45 @@ for i in range(min(num_sectors, len(result))):
             else:
                 new_product['price'] = float(new_product['price'][:-1].replace(' ','').replace('/','').replace('kg','')) / 100
 
-
             new_product['rating'] = float(
-                len(soup.find('div', class_='star-rating').find_all('path', class_="star-rating-icon--full")))
+                len(page_soup.find('div', class_='star-rating').find_all('path', class_="star-rating-icon--full")))
 
             try:
-                new_product['num_reviews'] = int(soup.find('span', class_='pd__reviews__read').text.split('(')[1][:-1])
+                new_product['num_reviews'] = int(page_soup.find('span', class_='pd__reviews__read').text.split('(')[1][:-1])
             except:
                 new_product['num_reviews'] = 0
 
             new_product['expiry_duration'] = 0
 
-            if len(soup.find_all(text=[re.compile('Not suitable for vegetarians', re.IGNORECASE),
-                                       re.compile('Not vegetarian', re.IGNORECASE)])):
+            if len(page_soup.find_all(text=[re.compile('Not suitable for vegetarians', re.IGNORECASE),
+                                            re.compile('Not vegetarian', re.IGNORECASE)])):
                 new_product['vegetarian'], new_product['vegan'] = 0, 0
-            elif len(soup.find_all(text=[re.compile('Not suitable for vegans', re.IGNORECASE),
-                                         re.compile('Not vegan', re.IGNORECASE)])):
+            elif len(page_soup.find_all(text=[re.compile('Not suitable for vegans', re.IGNORECASE),
+                                              re.compile('Not vegan', re.IGNORECASE)])):
                 new_product['vegetarian'], new_product['vegan'] = 1, 0
-            elif len(soup.find_all(
+            elif len(page_soup.find_all(
                     text=[re.compile('Suitable for vegans', re.IGNORECASE), re.compile('Vegan', re.IGNORECASE)])):
                 new_product['vegetarian'], new_product['vegan'] = 1, 1
-            elif len(soup.find_all(text=[re.compile('Suitable for vegetarians', re.IGNORECASE),
-                                         re.compile('Vegetarian', re.IGNORECASE)])):
+            elif len(page_soup.find_all(text=[re.compile('Suitable for vegetarians', re.IGNORECASE),
+                                              re.compile('Vegetarian', re.IGNORECASE)])):
                 new_product['vegetarian'], new_product['vegan'] = 1, 0
             else:
                 new_product['vegetarian'], new_product['vegan'] = 0, 0
 
             new_product['religious_info'] = []
-            if len(soup.find_all(text=re.compile('Kosher', re.IGNORECASE))):
-                new_product['religious_info'].append(soup.find(text=re.compile('Kosher', re.IGNORECASE)).parent.text)
-            if len(soup.find_all(text=re.compile('Halal', re.IGNORECASE))):
-                new_product['religious_info'].append(soup.find(text=re.compile('Halal', re.IGNORECASE)).parent.text)
+            if len(page_soup.find_all(text=re.compile('Kosher', re.IGNORECASE))):
+                new_product['religious_info'].append(page_soup.find(text=re.compile('Kosher', re.IGNORECASE)).parent.text)
+            if len(page_soup.find_all(text=re.compile('Halal', re.IGNORECASE))):
+                new_product['religious_info'].append(page_soup.find(text=re.compile('Halal', re.IGNORECASE)).parent.text)
             new_product['religious_info'] = str(new_product['religious_info'])
 
-            if len(soup.find_all(text=re.compile('Organic', re.IGNORECASE))):
+            if len(page_soup.find_all(text=re.compile('Organic', re.IGNORECASE))):
                 new_product['organic'] = 1
             else:
                 new_product['organic'] = 0
 
             product_description = []
-            description_heading = soup.find('h3', text=re.compile('Description', re.IGNORECASE))
+            description_heading = page_soup.find('h3', text=re.compile('Description', re.IGNORECASE))
             if description_heading:
                 flag = False
                 while not flag:
@@ -242,7 +239,7 @@ for i in range(min(num_sectors, len(result))):
             col100 = -1
             colserving = -1
             try:
-                nutrition_cols = soup.find('table', class_='nutritionTable').thead.tr.find_all('th')
+                nutrition_cols = page_soup.find('table', class_='nutritionTable').thead.tr.find_all('th')
                 for i in range(1, len(nutrition_cols)):
                     if re.search("100 ?(g|ml)", str.lower(nutrition_cols[i].text)) and 'ri' not in str.lower(
                             nutrition_cols[i].text) and col100 == -1:
@@ -251,7 +248,7 @@ for i in range(min(num_sectors, len(result))):
                             nutrition_cols[i].text) and colserving == -1:
                         colserving = i - 1
                 if col100 != -1:
-                    rows = soup.find('table', class_='nutritionTable').tbody.find_all('tr')
+                    rows = page_soup.find('table', class_='nutritionTable').tbody.find_all('tr')
                     try:
                         new_product['nutrition_100']['Energy'] = float(rows[1].find_all('td')[col100].text.split('kcal')[0])
                         if colserving != -1:
@@ -287,7 +284,7 @@ for i in range(min(num_sectors, len(result))):
 
 
             new_product['pack_servings'] = 0
-            servings = soup.find(text=re.compile("Contains .+ servings", re.IGNORECASE))
+            servings = page_soup.find(text=re.compile("Contains .+ servings", re.IGNORECASE))
             if servings:
                 servings = \
                 str.lower(servings).split('contains ')[1].split('servings')[0].replace('approx. ', '').replace(
@@ -306,46 +303,46 @@ for i in range(min(num_sectors, len(result))):
             if not new_product['pack_servings']:
                 try:
                     new_product['pack_servings'] = int(
-                        re.findall(" x[0-9]+", soup.find('h1', class_='pd__header').text)[0][2:])
+                        re.findall(" x[0-9]+", page_soup.find('h1', class_='pd__header').text)[0][2:])
                 except:
                     try:
                         new_product['pack_servings'] = int(
-                            re.findall(" [0-9]+ ", soup.find('h1', class_='pd__header').text)[0][1:-1])
+                            re.findall(" [0-9]+ ", page_soup.find('h1', class_='pd__header').text)[0][1:-1])
                     except:
                         new_product['pack_servings'] = 0
 
             new_product['mass'] = 0
             try:
-                new_product['mass'] = float(re.search("[0-9.]+", re.search(" [0-9.]+(g|ml)", soup.find('h1',
-                                                                                                       class_='pd__header').text).group(
+                new_product['mass'] = float(re.search("[0-9.]+", re.search(" [0-9.]+(g|ml)", page_soup.find('h1',
+                                                                                                            class_='pd__header').text).group(
                     0)).group(0)) / 1000
                 try:
                     new_product['mass'] *= float(
-                        re.search(" x[0-9]+", soup.find('h1', class_='pd__header').text).group(0)[2:])
+                        re.search(" x[0-9]+", page_soup.find('h1', class_='pd__header').text).group(0)[2:])
                 except:
                     pass
             except:
                 try:
-                    new_product['mass'] = float(re.search("[0-9.]+", re.search(" [0-9.]+(kg|l)", soup.find('h1',
-                                                                                                           class_='pd__header').text).group(
+                    new_product['mass'] = float(re.search("[0-9.]+", re.search(" [0-9.]+(kg|l)", page_soup.find('h1',
+                                                                                                                class_='pd__header').text).group(
                         0)).group(0))
                     try:
                         new_product['mass'] *= float(
-                            re.search(" x[0-9]+", soup.find('h1', class_='pd__header').text).group(0)[2:])
+                            re.search(" x[0-9]+", page_soup.find('h1', class_='pd__header').text).group(0)[2:])
                     except:
                         pass
                 except:
                     try:
                         mass = re.search("[0-9]+x[0-9.]+", re.search(" [0-9]+x[0-9]*.?[0-9]+(g|ml)",
-                                                                     soup.find('h1', class_='pd__header').text).group(
+                                                                     page_soup.find('h1', class_='pd__header').text).group(
                             0)).group(0).split('x')
                         new_product['mass'] = float(mass[0]) * float(mass[1]) / 1000
                         if not new_product['pack_servings']:
                             new_product['pack_servings'] = int(mass[0])
                     except:
                         try:
-                            mass = re.search("[0-9]+x[0-9.]+", re.search(" [0-9]+x[0-9]*.?[0-9]+(kg|l)", soup.find('h1',
-                                                                                                                   class_='pd__header').text).group(
+                            mass = re.search("[0-9]+x[0-9.]+", re.search(" [0-9]+x[0-9]*.?[0-9]+(kg|l)", page_soup.find('h1',
+                                                                                                                        class_='pd__header').text).group(
                                 0)).group(0).split('x')
                             new_product['mass'] = float(mass[0]) * float(mass[1])
                             if not new_product['pack_servings']:
@@ -365,33 +362,33 @@ for i in range(min(num_sectors, len(result))):
 
             try:
                 new_product['ingredients'] = [ingredient.text.replace(', ', '') for ingredient in
-                                              soup.find('h3', text='Ingredients').parent.ul.find_all('li')]
+                                              page_soup.find('h3', text='Ingredients').parent.ul.find_all('li')]
             except:
                 try:
-                    new_product['ingredients'] = soup.find('strong',
-                                                           text=re.compile('INGREDIENTS:')).parent.text.replace(
+                    new_product['ingredients'] = page_soup.find('strong',
+                                                                text=re.compile('INGREDIENTS:')).parent.text.replace(
                         'INGREDIENTS:', '').replace('INGREDIENTS: ', '').replace('.', '').split(',')
                 except:
                     new_product['ingredients'] = []
             new_product['ingredients'] = str(new_product['ingredients'])
 
             try:
-                new_product['allergens'] = [ingredient.text.replace(', ', '') for ingredient in soup.find('h3',
-                                                                                                          text=re.compile(
+                new_product['allergens'] = [ingredient.text.replace(', ', '') for ingredient in page_soup.find('h3',
+                                                                                                               text=re.compile(
                                                                                                               'Ingredients',
                                                                                                               re.IGNORECASE)).parent.ul.find_all(
                     'span', style='font-weight: bold;')]
             except:
                 try:
                     new_product['allergens'] = [x.text for x in
-                                                soup.find('strong', text=re.compile('INGREDIENTS:')).parent.find_all(
+                                                page_soup.find('strong', text=re.compile('INGREDIENTS:')).parent.find_all(
                                                     'strong')[1:]]
                 except:
                     new_product['allergens'] = []
             new_product['allergens'] = str(new_product['allergens'])
 
             product_info = []
-            health_heading = soup.find('h3', text=re.compile('Health', re.IGNORECASE))
+            health_heading = page_soup.find('h3', text=re.compile('Health', re.IGNORECASE))
             if health_heading:
                 flag = False
                 while not flag:
@@ -406,7 +403,7 @@ for i in range(min(num_sectors, len(result))):
             new_product['info'] = '\n'.join(product_info)
 
             cooking_info = []
-            prep_heading = soup.find('h3', text=re.compile('Preparation', re.IGNORECASE))
+            prep_heading = page_soup.find('h3', text=re.compile('Preparation', re.IGNORECASE))
             if prep_heading:
                 flag = False
                 while not flag:
@@ -421,7 +418,7 @@ for i in range(min(num_sectors, len(result))):
             new_product['cook_info'] = '\n'.join(cooking_info)
 
             product_origin = []
-            origin_heading = soup.find('h3', text=re.compile('Country of Origin', re.IGNORECASE))
+            origin_heading = page_soup.find('h3', text=re.compile('Country of Origin', re.IGNORECASE))
             if origin_heading:
                 flag = False
                 while not flag:
@@ -439,7 +436,7 @@ for i in range(min(num_sectors, len(result))):
                 new_product['origin_country'] = '\n'.join(product_origin)
 
             product_recycling = []
-            packaging_heading = soup.find('h3', text=re.compile('Packaging', re.IGNORECASE))
+            packaging_heading = page_soup.find('h3', text=re.compile('Packaging', re.IGNORECASE))
             if packaging_heading:
                 flag = False
                 while not flag:

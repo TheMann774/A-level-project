@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup as bs
 import pandas as pd
-from Heroku_functions import postgres_execute, postgres_connect
+from Heroku_functions import postgres_execute, postgres_update, postgres_connect
 from datetime import date
 import time
 
@@ -17,7 +17,9 @@ def heroku_upload():
         "path", 
         "link", 
         "num_products",
-        "date_updated")
+        "date_updated",
+        "products_scraped",
+        "required")
                     VALUES {}'''.format(records_list_template)
 
     conn = postgres_connect()
@@ -34,15 +36,15 @@ bad_urls = []
 soup = bs(page.content, "html.parser")
 all_sectors = soup.find('ul', id='megaNavLevelOne').find_all('li')[3:]
 all_sectors = [[[x.a.text.strip()], x.a['href']] for x in all_sectors]
-leaf_sectors = pd.DataFrame(columns=['name', 'path', 'link', 'num_products', 'date_updated'])
+leaf_sectors = pd.DataFrame(
+    columns=['name', 'path', 'link', 'num_products', 'date_updated', 'products_scraped', 'required'])
 print(all_sectors)
 for depth in ['departments', 'aisles', 'shelf']:
     print()
     print('looking for', depth, 'in', len(all_sectors), 'places')
     new_sectors = []
     for sector in all_sectors:
-        if sector[0][-1] not in ['Easter',"Mother's Day"]:
-            print('>'.join(sector[0]))
+        print('>'.join(sector[0]))
         URL = sector[1]
         if 'sainsburys.co.uk' not in URL:
             URL = 'https://www.sainsburys.co.uk' + URL
@@ -73,14 +75,18 @@ for depth in ['departments', 'aisles', 'shelf']:
                     new_sectors.append([sector[0] + [new_link.a.text.strip()], new_link.a['href']])
             else:
                 leaf_sectors = leaf_sectors.append(
-                    {'name': sector[0][-1], 'path': '>'.join(sector[0]), 'link': sector[1], 'num_products': 0,
+                    {'name': sector[0][-1], 'path': '>'.join(sector[0]), 'link': URL, 'num_products': 0,
                      'date_updated': date.today().strftime('%d-%m-%Y')}, ignore_index=True)
                 print('appended')
             time.sleep(1)
     all_sectors = new_sectors
-for sector in all_sectors:
-    leaf_sectors = leaf_sectors.append(
-        {'name': sector[0][-1], 'path': '>'.join(sector[0]), 'link': sector[1], 'num_products': 0,
-         'date_updated': date.today().strftime('%d-%m-%Y')}, ignore_index=True)
-heroku_upload()
 
+for sector in all_sectors:
+    leaf_sectors = leaf_sectors.append({'name': sector[0][-1],
+                                        'path': '>'.join(sector[0]),
+                                        'link': sector[1], 'num_products': 0,
+                                        'date_updated': date.today().strftime('%d-%m-%Y'),
+                                        'products_scraped': 0, 'required': 1},
+                                       ignore_index=True)
+
+# heroku_upload()

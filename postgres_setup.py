@@ -98,6 +98,8 @@ CREATE TABLE "sainsburys_products" (
 '''
 result = postgres_execute(sql_text)
 """
+
+
 #CHANGE COLUMN TO DEFAULT UUID
 """
 sql_text = '''
