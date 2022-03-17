@@ -1,34 +1,65 @@
 import requests
-from bs4 import BeautifulSoup as bs
-import pandas as pd
-from Heroku_functions import postgres_execute, postgres_update, postgres_connect
-from datetime import date
-import time
-import re
+from Heroku_functions import postgres_execute
 import geopy.distance
-import ast
 
-countries = ['andorra', 'united arab emirates', 'afghanistan', 'antigua and barbuda', 'anguilla', 'albania', 'armenia', 'angola', 'antarctica', 'argentina', 'american samoa', 'austria', 'australia', 'aruba', 'aland islands', 'azerbaijan', 'bosnia and herzegovina', 'barbados', 'bangladesh', 'belgium', 'burkina faso', 'bulgaria', 'bahrain', 'burundi', 'benin', 'saint-barthélemy', 'bermuda', 'brunei darussalam', 'bolivia', 'caribbean netherlands', 'brazil', 'bahamas', 'bhutan', 'bouvet island', 'botswana', 'belarus', 'belize', 'canada', 'cocos (keeling) islands', 'democratic republic of the congo', 'centrafrican republic', 'republic of the congo', 'switzerland', "côte d'ivoire", 'cook islands', 'chile', 'cameroon', 'china', 'colombia', 'costa rica', 'cuba', 'cabo verde', 'curaçao', 'christmas island', 'cyprus', 'czech republic', 'germany', 'djibouti', 'denmark', 'dominica', 'dominican republic', 'algeria', 'ecuador', 'estonia', 'egypt', 'western sahara', 'eritrea', 'spain', 'ethiopia', 'finland', 'fiji', 'falkland islands', 'micronesia (federated states of)', 'faroe islands', 'france', 'gabon', 'united kingdom', 'grenada', 'georgia', 'french guiana', 'guernsey', 'ghana', 'gibraltar', 'greenland', 'the gambia', 'guinea', 'guadeloupe', 'equatorial guinea', 'greece', 'south georgia and the south sandwich islands', 'guatemala', 'guam', 'guinea bissau', 'guyana', 'hong kong (sar of china)', 'heard island and mcdonald islands', 'honduras', 'croatia', 'haiti', 'hungary', 'indonesia', 'ireland', 'israel', 'isle of man', 'india', 'british indian ocean territory', 'iraq', 'iran', 'iceland', 'italy', 'jersey', 'jamaica', 'jordan', 'japan', 'kenya', 'kyrgyzstan', 'cambodia', 'kiribati', 'comores', 'saint kitts and nevis', 'north korea', 'south korea', 'kuwait', 'cayman islands', 'kazakhstan', 'laos', 'lebanon', 'saint lucia', 'liechtenstein', 'sri lanka', 'liberia', 'lesotho', 'lithuania', 'luxembourg', 'latvia', 'libya', 'morocco', 'monaco', 'moldova', 'montenegro', 'saint martin (french part)', 'madagascar', 'marshall islands', 'north macedonia', 'mali', 'myanmar', 'mongolia', 'macao (sar of china)', 'northern mariana islands', 'martinique', 'mauritania', 'montserrat', 'malta', 'mauritius', 'maldives', 'malawi', 'mexico', 'malaysia', 'mozambique', 'namibia', 'new caledonia', 'niger', 'norfolk island', 'nigeria', 'nicaragua', 'the netherlands', 'norway', 'nepal', 'nauru', 'niue', 'new zealand', 'oman', 'panama', 'peru', 'french polynesia', 'papua new guinea', 'philippines', 'pakistan', 'poland', 'saint pierre and miquelon', 'pitcairn', 'puerto rico', 'palestinian territory', 'portugal', 'palau', 'paraguay', 'qatar', 'reunion', 'romania', 'serbia', 'russia', 'rwanda', 'saudi arabia', 'solomon islands', 'seychelles', 'sudan', 'sweden', 'singapore', 'saint helena', 'slovenia', 'svalbard and jan mayen', 'slovakia', 'sierra leone', 'san marino', 'sénégal', 'somalia', 'suriname', 'são tomé and príncipe', 'south sudan', 'el salvador', 'saint martin (dutch part)', 'syria', 'eswatini', 'turks and caicos islands', 'chad', 'french southern and antarctic lands', 'togo', 'thailand', 'tajikistan', 'tokelau', 'timor-leste', 'turkmenistan', 'tunisia', 'tonga', 'turkey', 'trinidad and tobago', 'tuvalu', 'taiwan', 'tanzania', 'ukraine', 'uganda', 'united states minor outlying islands', 'united states of america', 'uruguay', 'uzbekistan', 'city of the vatican', 'saint vincent and the grenadines', 'venezuela', 'british virgin islands', 'united states virgin islands', 'vietnam', 'vanuatu', 'wallis and futuna', 'samoa', 'yemen', 'mayotte', 'south africa', 'zambia', 'zimbabwe']
-country_swaps = {'uk':'united kingdom', 'england':'united kingdom', 'scotland':'united kingdom', 'usa':'united states of america', 'ireland':'republic of ireland'}
-emissions={'road':[0.2,0.5], 'rail':[0.05,0.06], 'sea':[0.01,0.02], 'air':[1.13,1.13]}
-air_food = ['green bean', 'sweetcorn', 'asparagus', 'pea', 'lime', 'avocado', 'spring onion', 'pineapple', 'sweet potato', 'grape']
-controlled_food = []
+countries = ['andorra', 'united arab emirates', 'afghanistan', 'antigua and barbuda', 'anguilla', 'albania', 'armenia',
+             'angola', 'antarctica', 'argentina', 'american samoa', 'austria', 'australia', 'aruba', 'aland islands',
+             'azerbaijan', 'bosnia and herzegovina', 'barbados', 'bangladesh', 'belgium', 'burkina faso', 'bulgaria',
+             'bahrain', 'burundi', 'benin', 'saint-barthélemy', 'bermuda', 'brunei darussalam', 'bolivia',
+             'caribbean netherlands', 'brazil', 'bahamas', 'bhutan', 'bouvet island', 'botswana', 'belarus', 'belize',
+             'canada', 'cocos (keeling) islands', 'democratic republic of the congo', 'centrafrican republic',
+             'republic of the congo', 'switzerland', "côte d'ivoire", 'cook islands', 'chile', 'cameroon', 'china',
+             'colombia', 'costa rica', 'cuba', 'cabo verde', 'curaçao', 'christmas island', 'cyprus', 'czech republic',
+             'germany', 'djibouti', 'denmark', 'dominica', 'dominican republic', 'algeria', 'ecuador', 'estonia',
+             'egypt', 'western sahara', 'eritrea', 'spain', 'ethiopia', 'finland', 'fiji', 'falkland islands',
+             'micronesia (federated states of)', 'faroe islands', 'france', 'gabon', 'united kingdom', 'grenada',
+             'georgia', 'french guiana', 'guernsey', 'ghana', 'gibraltar', 'greenland', 'the gambia', 'guinea',
+             'guadeloupe', 'equatorial guinea', 'greece', 'south georgia and the south sandwich islands', 'guatemala',
+             'guam', 'guinea bissau', 'guyana', 'hong kong (sar of china)', 'heard island and mcdonald islands',
+             'honduras', 'croatia', 'haiti', 'hungary', 'indonesia', 'ireland', 'israel', 'isle of man', 'india',
+             'british indian ocean territory', 'iraq', 'iran', 'iceland', 'italy', 'jersey', 'jamaica', 'jordan',
+             'japan', 'kenya', 'kyrgyzstan', 'cambodia', 'kiribati', 'comores', 'saint kitts and nevis', 'north korea',
+             'south korea', 'kuwait', 'cayman islands', 'kazakhstan', 'laos', 'lebanon', 'saint lucia', 'liechtenstein',
+             'sri lanka', 'liberia', 'lesotho', 'lithuania', 'luxembourg', 'latvia', 'libya', 'morocco', 'monaco',
+             'moldova', 'montenegro', 'saint martin (french part)', 'madagascar', 'marshall islands', 'north macedonia',
+             'mali', 'myanmar', 'mongolia', 'macao (sar of china)', 'northern mariana islands', 'martinique',
+             'mauritania', 'montserrat', 'malta', 'mauritius', 'maldives', 'malawi', 'mexico', 'malaysia', 'mozambique',
+             'namibia', 'new caledonia', 'niger', 'norfolk island', 'nigeria', 'nicaragua', 'the netherlands', 'norway',
+             'nepal', 'nauru', 'niue', 'new zealand', 'oman', 'panama', 'peru', 'french polynesia', 'papua new guinea',
+             'philippines', 'pakistan', 'poland', 'saint pierre and miquelon', 'pitcairn', 'puerto rico',
+             'palestinian territory', 'portugal', 'palau', 'paraguay', 'qatar', 'reunion', 'romania', 'serbia',
+             'russia', 'rwanda', 'saudi arabia', 'solomon islands', 'seychelles', 'sudan', 'sweden', 'singapore',
+             'saint helena', 'slovenia', 'svalbard and jan mayen', 'slovakia', 'sierra leone', 'san marino', 'sénégal',
+             'somalia', 'suriname', 'são tomé and príncipe', 'south sudan', 'el salvador', 'saint martin (dutch part)',
+             'syria', 'eswatini', 'turks and caicos islands', 'chad', 'french southern and antarctic lands', 'togo',
+             'thailand', 'tajikistan', 'tokelau', 'timor-leste', 'turkmenistan', 'tunisia', 'tonga', 'turkey',
+             'trinidad and tobago', 'tuvalu', 'taiwan', 'tanzania', 'ukraine', 'uganda',
+             'united states minor outlying islands', 'united states of america', 'uruguay', 'uzbekistan',
+             'city of the vatican', 'saint vincent and the grenadines', 'venezuela', 'british virgin islands',
+             'united states virgin islands', 'vietnam', 'vanuatu', 'wallis and futuna', 'samoa', 'yemen', 'mayotte',
+             'south africa', 'zambia', 'zimbabwe']
+country_swaps = {'uk': 'united kingdom', 'england': 'united kingdom', 'scotland': 'united kingdom',
+                 'usa': 'united states of america', 'ireland': 'republic of ireland'}
+emissions = {'road': [0.2, 0.5], 'rail': [0.05, 0.06], 'sea': [0.01, 0.02], 'air': [1.13, 1.13]}
+air_food = ['green bean', 'sweetcorn', 'asparagus', 'pea', 'lime', 'avocado', 'spring onion', 'pineapple',
+            'sweet potato', 'grape', 'beef', 'chicken', 'lamb', 'pork', 'turkey']
+controlled_food = ['milk', 'egg', 'cream', 'yoghurt', 'beef', 'chicken', 'lamb', 'pork', 'turkey', 'frozen']
+
 
 def get_country_coords(country):
-    # create url
-    url = '{0}{1}{2}'.format('http://nominatim.openstreetmap.org/search?country=',
-                             country,
-                             '&format=json&polygon=0')
+    url = 'http://nominatim.openstreetmap.org/search?country=' + country + '&format=json&polygon=0'
     response = requests.get(url).json()[0]
-    # parse response to list
-    lst = [response.get(key) for key in ['lat','lon']]
-    return [float(i) for i in lst]
+    return [float(response.get(key)) for key in ['lat', 'lon']]
 
-def get_countries_distance(a,b):
+
+def get_countries_distance(a, b):
     return float(str(geopy.distance.distance(get_country_coords(a), get_country_coords(b)))[:-3])
 
-def get_travel_emissions(dist,mass,transport_type,temp_controlled):
-    return dist*mass*emissions[transport_type][int(temp_controlled)]/1000
+
+def get_travel_emissions(dist, mass, transport_type, temp_controlled):
+    emission_coefficient = emissions[transport_type][int(temp_controlled)]
+    return dist * mass * emission_coefficient / 1000
+
 
 location = 'united kingdom'
 
@@ -46,27 +77,27 @@ FROM emissions_stats
 '''
 links = postgres_execute(links_query)
 
-
 for index, row in result.iterrows():
     print(index)
     transport_emissions = -1
-    #Convert e.g. Grown in Argentina, Brazil, South Africa or France -> ['Argentina', 'Brazil', 'South Africa', 'France']
+    # Convert e.g. 'Grown in Argentina, Brazil, South Africa or France' -> ['Argentina', 'Brazil', 'South Africa', 'France']
     product_countries = []
-    a = str.lower(row['origin_country']).replace(',','').replace('\n',' ').split(' ')
-    a = [x.strip().replace(',','').replace('.','') for x in a]
+    a = str.lower(row['origin_country']).replace(',', '').replace('\n', ' ').split(' ')
+    a = [x.strip().replace('.', '') for x in a]
     for i in range(len(a)):
-        for e in range(i,min(len(a),i+5)):
-            x = str.lower(' '.join(a[i:e+1]))
+        for e in range(i, min(len(a), i + 5)):
+            x = str.lower(' '.join(a[i:e + 1]))
             if x in countries:
                 if x not in product_countries:
                     product_countries.append(x)
             elif x in country_swaps.keys():
                 if country_swaps[x] not in product_countries:
                     product_countries.append(country_swaps[x])
-    #Get distance to UK for each country the product could have been produced in and average the data
     if product_countries:
-        average_dist = sum([get_countries_distance(x,'United Kingdom') for x in product_countries])/float(len(product_countries))
-        #Check if product is transported by sea or air, and whether it needs to be temperature controlled
+        # Get distance to UK for each country the product could have been produced in and average the data
+        average_dist = sum([get_countries_distance(x, 'United Kingdom') for x in product_countries]) / float(
+            len(product_countries))
+        # Check if product is transported by sea or air, and whether it needs to be temperature controlled
         transport_type, temp_controlled = 'sea', False
         for item in air_food:
             if item in str.lower(row['name']):
@@ -78,6 +109,8 @@ for index, row in result.iterrows():
             transport_emissions = get_travel_emissions(average_dist, row['mass'], transport_type, temp_controlled)
         except:
             pass
+    else:
+        transport_emissions = 0
 
     food_emissions = 0
     match = None
@@ -103,7 +136,8 @@ for index, row in result.iterrows():
                     match_row = False
 
             if row2['product_not_contains'] != 'NaN':
-                match_product_not_contains = True not in [str.lower(x) in str.lower(row['name']) for x in row2['product_not_contains'].split(',')]
+                match_product_not_contains = True not in [str.lower(x) in str.lower(row['name']) for x in
+                                                          row2['product_not_contains'].split(',')]
                 if not match_product_not_contains:
                     match_row = False
 
@@ -117,20 +151,21 @@ for index, row in result.iterrows():
         if row['mass']:
             food_emissions = row['mass'] * links.iloc[match]['emissions']
     if food_emissions and transport_emissions != -1:
-        result.iloc[index,-2] = round(food_emissions + transport_emissions,3)
+        result.iloc[index, -2] = round(food_emissions + transport_emissions, 3)
     else:
         if not food_emissions:
             print(row['name'])
         if transport_emissions == -1:
             print(row['origin_country'])
-        result.iloc[index,-2] = 0
+        result.iloc[index, -2] = 0
 
     sql_text = '''
     UPDATE sainsburys_products
     SET emissions = **emissions**
     WHERE uuid = '**uuid**'
-    '''.replace('**emissions**',str(result.iloc[index,-2])).replace('**uuid**',result.iloc[index]['uuid'])
+    '''.replace('**emissions**', str(result.iloc[index, -2])).replace('**uuid**', result.iloc[index]['uuid'])
     _ = postgres_execute(sql_text)
+
 sql_text = '''
 UPDATE sainsburys_products
 SET emissions_per_kg = emissions/mass
@@ -147,10 +182,10 @@ _ = postgres_execute(sql_text)
 
 sql_text = '''
 UPDATE sainsburys_products
-SET emissions_per_calorie = 1000*emissions/CAST(SUBSTRING(nutrition_100, POSITION('Energy' IN nutrition_100)+9, POSITION('.' IN nutrition_100)-POSITION('Energy' IN nutrition_100)-7) AS float)/10/mass
+SET emissions_per_calorie = 1000*emissions/CAST(SUBSTRING(nutrition_100, 
+    POSITION('Energy' IN nutrition_100)+9, 
+    POSITION('.' IN nutrition_100)-POSITION('Energy' IN nutrition_100)-7) AS float)/10/mass
 WHERE POSITION('Energy' IN nutrition_100) > 0 AND mass > 0
 '''
 _ = postgres_execute(sql_text)
-
-
 

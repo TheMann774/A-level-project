@@ -1,8 +1,8 @@
-CREATE TABLE "sainsburys_sectors" (
-    "uuid" uuid DEFAULT uuid_generate_v4 (),
-    "name" varchar,
-    "path" varchar,
-    "num_products" int,
-    "date_updated" varchar,
-    "link" varchar)
+CREATE TABLE "emission_stats" (
+    food_commodity varchar,
+    product_contains varchar,
+    sector_contains varchar,
+    product_not_contains varchar,
+    emissions float
+)
 

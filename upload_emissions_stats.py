@@ -1,5 +1,6 @@
 import pandas as pd
-from Heroku_functions import postgres_execute, postgres_connect
+from Heroku_functions import postgres_connect
+
 
 def heroku_upload():
     """upload database of new-found products to heroku"""
@@ -22,6 +23,7 @@ def heroku_upload():
     conn.commit()
     print("rows uploaded")
 
-data = pd.read_csv('SuEatableLife_Food_Fooprint_database.csv').iloc[:324,:5]
+
+data = pd.read_csv('SuEatableLife_Food_Fooprint_database.csv').iloc[:324, :5]
 heroku_upload()
 

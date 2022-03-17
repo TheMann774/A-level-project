@@ -33,6 +33,7 @@ def initialise_chrome():
         driver.maximize_window()
     return new_driver
 
+
 def accept_cookies(chrome_driver):
     """try to accept cookies on the page"""
     elements = chrome_driver.find_elements_by_xpath("//*[contains(text(), 'Accept')]")
@@ -115,7 +116,6 @@ new_products = pd.DataFrame(columns=["name",
                                      "origin_country",
                                      "recycling"])
 
-
 for i in range(min(num_sectors, len(result))):
     new_products = new_products[0:0]
     sector = result.iloc[i]
@@ -171,7 +171,7 @@ for i in range(min(num_sectors, len(result))):
             page_soup = bs(soup_file, "html.parser")
 
             new_product = {'name': page_soup.find('h1', class_="pd__header").text,
-                           'date_updated': date.today().strftime('%d-%m-%Y'),
+                           'date_updated': date.today().strftime('%Y-%m-%d'),
                            'url': product,
                            'sector_id': sector['uuid'],
                            'price': page_soup.find('div', class_="pd__cost").div.text}
@@ -179,15 +179,18 @@ for i in range(min(num_sectors, len(result))):
             if '/' in new_product['price'] and 'kg' in new_product:
                 new_product['mass'] = 1
             if '£' in new_product['price']:
-                new_product['price'] = float(new_product['price'][1:].replace(' ','').replace('/','').replace('kg',''))
+                new_product['price'] = float(
+                    new_product['price'][1:].replace(' ', '').replace('/', '').replace('kg', ''))
             else:
-                new_product['price'] = float(new_product['price'][:-1].replace(' ','').replace('/','').replace('kg','')) / 100
+                new_product['price'] = float(
+                    new_product['price'][:-1].replace(' ', '').replace('/', '').replace('kg', '')) / 100
 
             new_product['rating'] = float(
                 len(page_soup.find('div', class_='star-rating').find_all('path', class_="star-rating-icon--full")))
 
             try:
-                new_product['num_reviews'] = int(page_soup.find('span', class_='pd__reviews__read').text.split('(')[1][:-1])
+                new_product['num_reviews'] = int(
+                    page_soup.find('span', class_='pd__reviews__read').text.split('(')[1][:-1])
             except:
                 new_product['num_reviews'] = 0
 
@@ -210,9 +213,11 @@ for i in range(min(num_sectors, len(result))):
 
             new_product['religious_info'] = []
             if len(page_soup.find_all(text=re.compile('Kosher', re.IGNORECASE))):
-                new_product['religious_info'].append(page_soup.find(text=re.compile('Kosher', re.IGNORECASE)).parent.text)
+                new_product['religious_info'].append(
+                    page_soup.find(text=re.compile('Kosher', re.IGNORECASE)).parent.text)
             if len(page_soup.find_all(text=re.compile('Halal', re.IGNORECASE))):
-                new_product['religious_info'].append(page_soup.find(text=re.compile('Halal', re.IGNORECASE)).parent.text)
+                new_product['religious_info'].append(
+                    page_soup.find(text=re.compile('Halal', re.IGNORECASE)).parent.text)
             new_product['religious_info'] = str(new_product['religious_info'])
 
             if len(page_soup.find_all(text=re.compile('Organic', re.IGNORECASE))):
@@ -240,17 +245,18 @@ for i in range(min(num_sectors, len(result))):
             colserving = -1
             try:
                 nutrition_cols = page_soup.find('table', class_='nutritionTable').thead.tr.find_all('th')
-                for i in range(1, len(nutrition_cols)):
-                    if re.search("100 ?(g|ml)", str.lower(nutrition_cols[i].text)) and 'ri' not in str.lower(
-                            nutrition_cols[i].text) and col100 == -1:
-                        col100 = i - 1
-                    if 'serving' in str.lower(nutrition_cols[i].text) and 'ri' not in str.lower(
-                            nutrition_cols[i].text) and colserving == -1:
-                        colserving = i - 1
+                for col in range(1, len(nutrition_cols)):
+                    if re.search("100 ?(g|ml)", str.lower(nutrition_cols[col].text)) and 'ri' not in str.lower(
+                            nutrition_cols[col].text) and col100 == -1:
+                        col100 = col - 1
+                    if 'serving' in str.lower(nutrition_cols[col].text) and 'ri' not in str.lower(
+                            nutrition_cols[col].text) and colserving == -1:
+                        colserving = col - 1
                 if col100 != -1:
                     rows = page_soup.find('table', class_='nutritionTable').tbody.find_all('tr')
                     try:
-                        new_product['nutrition_100']['Energy'] = float(rows[1].find_all('td')[col100].text.split('kcal')[0])
+                        new_product['nutrition_100']['Energy'] = float(
+                            re.findall("[0-9]+ ?kcal", rows[1].find_all('td')[col100].text)[0][:-4])
                         if colserving != -1:
                             serving_size = 0.1 * float(rows[1].find_all('td')[colserving].text.split('kcal')[0]) / \
                                            new_product['nutrition_100']['Energy']
@@ -265,23 +271,24 @@ for i in range(min(num_sectors, len(result))):
                         except:
                             try:
                                 new_product['nutrition_100']['Energy'] = float(
-                                    rows[0].find_all('td')[col100].text.replace(' ', '').replace('\n', '').split('/')[1])
+                                    rows[0].find_all('td')[col100].text.replace(' ', '').replace('\n', '').split('/')[
+                                        1])
                                 if colserving != -1:
                                     serving_size = 0.1 * float(
-                                        rows[0].find_all('td')[colserving].text.replace(' ', '').replace('\n', '').split('/')[
+                                        rows[0].find_all('td')[colserving].text.replace(' ', '').replace('\n',
+                                                                                                         '').split('/')[
                                             1]) / new_product['nutrition_100']['Energy']
                             except:
                                 pass
                     for row in rows[2:]:
                         try:
-                            new_product['nutrition_100'][row.th.text] = float(row.find_all('td')[col100].text.split('g')[0])
+                            new_product['nutrition_100'][row.th.text] = float(
+                                row.find_all('td')[col100].text.split('g')[0])
                         except:
                             pass
             except Exception as e:
                 print(e)
             new_product['nutrition_100'] = str(new_product['nutrition_100'])
-
-
 
             new_product['pack_servings'] = 0
             servings = page_soup.find(text=re.compile("Contains .+ servings", re.IGNORECASE))
@@ -323,9 +330,10 @@ for i in range(min(num_sectors, len(result))):
                     pass
             except:
                 try:
-                    new_product['mass'] = float(re.search("[0-9.]+", re.search(" [0-9.]+(kg|l)", page_soup.find('h1',
-                                                                                                                class_='pd__header').text).group(
-                        0)).group(0))
+                    new_product['mass'] = float(re.search("[0-9.]+",
+                                                          re.search(" [0-9.]+(kg|l)",
+                                                                    page_soup.find('h1', class_='pd__header').text
+                                                                    ).group(0)).group(0))
                     try:
                         new_product['mass'] *= float(
                             re.search(" x[0-9]+", page_soup.find('h1', class_='pd__header').text).group(0)[2:])
@@ -334,16 +342,18 @@ for i in range(min(num_sectors, len(result))):
                 except:
                     try:
                         mass = re.search("[0-9]+x[0-9.]+", re.search(" [0-9]+x[0-9]*.?[0-9]+(g|ml)",
-                                                                     page_soup.find('h1', class_='pd__header').text).group(
+                                                                     page_soup.find('h1',
+                                                                                    class_='pd__header').text).group(
                             0)).group(0).split('x')
                         new_product['mass'] = float(mass[0]) * float(mass[1]) / 1000
                         if not new_product['pack_servings']:
                             new_product['pack_servings'] = int(mass[0])
                     except:
                         try:
-                            mass = re.search("[0-9]+x[0-9.]+", re.search(" [0-9]+x[0-9]*.?[0-9]+(kg|l)", page_soup.find('h1',
-                                                                                                                        class_='pd__header').text).group(
-                                0)).group(0).split('x')
+                            mass = re.search("[0-9]+x[0-9.]+",
+                                             re.search(" [0-9]+x[0-9]*.?[0-9]+(kg|l)", page_soup.find('h1',
+                                                                                                      class_='pd__header').text).group(
+                                                 0)).group(0).split('x')
                             new_product['mass'] = float(mass[0]) * float(mass[1])
                             if not new_product['pack_servings']:
                                 new_product['pack_servings'] = int(mass[0])
@@ -354,6 +364,11 @@ for i in range(min(num_sectors, len(result))):
                                 except:
                                     pass
 
+            if new_product['pack_servings'] != 0 and not new_product['mass']:
+                try:
+                    new_product['mass'] = round(new_product['pack_servings'] * serving_size, 3)
+                except:
+                    pass
             if new_product['mass'] and not new_product['pack_servings']:
                 try:
                     new_product['pack_servings'] = round(new_product['mass'] / serving_size, 2)
@@ -375,13 +390,14 @@ for i in range(min(num_sectors, len(result))):
             try:
                 new_product['allergens'] = [ingredient.text.replace(', ', '') for ingredient in page_soup.find('h3',
                                                                                                                text=re.compile(
-                                                                                                              'Ingredients',
-                                                                                                              re.IGNORECASE)).parent.ul.find_all(
+                                                                                                                   'Ingredients',
+                                                                                                                   re.IGNORECASE)).parent.ul.find_all(
                     'span', style='font-weight: bold;')]
             except:
                 try:
                     new_product['allergens'] = [x.text for x in
-                                                page_soup.find('strong', text=re.compile('INGREDIENTS:')).parent.find_all(
+                                                page_soup.find('strong',
+                                                               text=re.compile('INGREDIENTS:')).parent.find_all(
                                                     'strong')[1:]]
                 except:
                     new_product['allergens'] = []
@@ -469,7 +485,8 @@ for i in range(min(num_sectors, len(result))):
     UPDATE sainsburys_sectors
     SET products_scraped = 1, num_products = **num_products**, date_updated = '**date**'
     WHERE path = '**path**'
-    '''.replace('**path**', sector['path']).replace('**num_products**', str(len(new_products))).replace('**date**', date.today().strftime('%Y-%m-%d'))
+    '''.replace('**path**', sector['path']).replace(
+        '**num_products**', str(len(new_products))).replace('**date**', date.today().strftime('%Y-%m-%d'))
     _ = postgres_execute(query_text)
 
     sql_text = '''UPDATE sainsburys_sectors
