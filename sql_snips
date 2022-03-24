@@ -1,8 +1,0 @@
-CREATE TABLE "emission_stats" (
-    food_commodity varchar,
-    product_contains varchar,
-    sector_contains varchar,
-    product_not_contains varchar,
-    emissions float
-)
-
