@@ -1,999 +1,325 @@
-Food commodity ITEM,Product contains,Sector contains,Product not contains,Carbon Footprint kg CO2eq/kg or l of food ITEM,,,,,,
-BEER IN CAN,,,,0.69,,,,,,
-BEER IN GLASS,,,,0.96,,,,,,
-BEER MODULAR CAN,,,,0.53,,,,,,
-CHOCOLATE OR CREAM FILLED COOKIES**,,,,1.53,,,,,,
-SIMPLE COOKIES**,,,,1.39,,,,,,
-MINERAL WATER*,,,,0.49,,,,,,
-BREAD MULTICEREAL**,multi or grain,bread,,0.70,,,,,,
-BREAD PLAIN**,plain,bread,,0.89,,,,,,
-BREAD WHOLE**,whole or brown,bread,,0.77,,,,,,
-BREAD FROZEN (F)*,frozen,bread,,1.31,,,,,,
-CORNFLAKES*,,cereal,,2.64,,,,,,
-DARK CHOCOLATE,"chocolate,dark",,,2.71,,,,,,
-MILK CHOCOLATE,"chocolate,milk",,,3.60,,,,,,
-COFFEE GROUND,,,,5.13,,,,,,
-COFFEE PARCHMENT,,,,8.29,,,,,,
-COFFEE DRIP FILTERED (L),,,,0.60,,,,,,
-COFFEE SOLUBLE POWDER (L),,,,0.33,,,,,,
-ESPRESSO (L),,,,0.55,,,,,,
-FLAVORED CRACKERS**,,,,0.93,,,,,,
-PLAIN CRACKERS**,,,,1.35,,,,,,
-WHOLEGRAIN CRACKERS**,,,,0.97,,,,,,
-CRISPBREAD**,,,,1.35,,,,,,
-KETCHUP,ketchup,,,1.46,,,,,,
-MAYONNAISE,mayonnaise,,,2.04,,,,,,
-TEMPE',,,,1.10,,,,,,
-EGG PASTA*,,,,3.15,,,,,,
-RASPBERRIES (F)*,"raspberries,frozen",,juice,1.18,,,,,,
-APPLE JUICE (I),"apple,juice",,,2.84,,,,,,
-BLUEBERRY JUICE (I),"blueberry,juice",,,3.00,,,,,,
-CRANBERRY JUICE (I),"cranberry,juice",,,2.88,,,,,,
-FIG JUICE (I),"fig,juice",,,3.20,,,,,,
-KIWI JUICE (I),"kiwi,juice",,,2.84,,,,,,
-MANGO JUICE (I),"mango,juice",,,2.96,,,,,,
-PINEAPPLE JUICE (I),"pineapple,juice",,,2.78,,,,,,
-STRAWBERRY JUICE (I),"strawberry,juice",,,2.68,,,,,,
-ORANGE JUICE,"orange,juice",,,0.46,,,,,,
-PEAR JUICE,"pear,juice",,,0.49,,,,,,
-BUCKWHEAT FLOUR,,,,1.96,,,,,,
-DURUM WHEAT,,,,0.47,,,,,,
-GRAHAM FLOUR,,,,0.47,,,,,,
-MAIZE FLOUR,,,,1.31,,,,,,
-MILLET FLOUR,,,,1.37,,,,,,
-OAT MEAL,,,,0.87,,,,,,
-SORGHUM FLOUR,,,,1.33,,,,,,
-WHEAT PLAIN FLOUR,,,,0.52,,,,,,
-WHOLE WHEAT FLOUR,,,,0.36,,,,,,
-CHOCOLATE,,,,6.60,,,,,,
-ICE CREAM,,,,1.02,,,,,,
-VANILLA,,,,4.30,,,,,,
-AZUKI BEAN FLOUR,,,,1.32,,,,,,
-MUNG BEAN FLOUR,,,,1.49,,,,,,
-SOY MEAL,,,,0.62,,,,,,
-BEANS IN CAN,baked beans,,,0.11,,,,,,
-GREEN BEANS IN CAN,"green beans,can",,,1.45,,,,,,
-BEANS (F),,,,1.77,,,,,,
-GREEN BEANS (F),beans,,baked,2.74,,,,,,
-MARGARINE*,margarine,,,1.39,,,,,,
-ALMOND COVERED WITH CHOCOLATE,,,,4.80,,,,,,
-HAZELNUT COVERED WITH CHOCOLATE,,,,3.43,,,,,,
-ALMOND PASTE,,,,2.98,,,,,,
-HAZELNUT CREAM,,,,2.71,,,,,,
-HAZELNUT PASTE,,,,1.69,,,,,,
-PEANUT BUTTER,,,,1.15,,,,,,
-PEANUT PASTE,,,,1.84,,,,,,
-OLIVE OIL,olive oil,,,3.27,,,,,,
-PALM OIL,palm oil,,,2.43,,,,,,
-PEANUT OIL,peanut oil,,,2.90,,,,,,
-RAPESEED OIL,rapeseed oil,,,1.79,,,,,,
-SOYBEAN OIL,soybean oil,,,1.79,,,,,,
-SUNFLOWER OIL,sunflower oil,,,0.98,,,,,,
-PASTA*,,"food cupboard,pasta",,1.21,,,,,,
-PESTO,pesto,sauce,,2.71,,,,,,
-PESTO WITHOUT GARLIC,,,,2.72,,,,,,
-BEET SUGAR,,,,0.94,,,,,,
-CANE SUGAR,,,,0.62,,,,,,
-CAKES AND CROISSANT**,,,,2.14,,,,,,
-COCOA CAKES AND CROISSANT**,,,,1.94,,,,,,
-TOMATO CHOPPED,"tomato,chopped",,,1.47,,,,,,
-TOMATO PEELED,,,,1.30,,,,,,
-TOMATO PUREE,tomato puree,,,1.03,,,,,,
-TOMATO & BASIL,,,,1.14,,,,,,
-TOMATO ARRABBIATA,,,,1.24,,,,,,
-CARROTS CANNED,,,,1.60,,,,,,
-CORN CANNED,,,,1.36,,,,,,
-CARROTS (F),,,,0.27,,,,,,
-ZUCCHINI (F),,,,1.35,,,,,,
-SOY CREAM*,,,,1.62,,,,,,
-ALMOND MILK,"milk,almond",,,0.42,,,,,,
-COCONUT MILK,"milk,coconut",,,0.41,,,,,,
-RICE MILK,"milk,rice",,,0.66,,,,,,
-SOY MILK,"milk,soy",,,0.78,,,,,,
-QUORNE,,quorn,,2.50,,,,,,
-SOY BURGER,,,,1.48,,,,,,
-TOFU,,,,2.27,,,,,,
-SOY YOGURT*,,,,1.36,,,,,,
-WINE RED,,,,0.87,,,,,,
-WINE WHITE,,,,0.44,,,,,,
-YEAST COMPRESSED*,,,,0.82,,,,,,
-YEAST DRIED*,,,,3.29,,,,,,
-YEAST LIQUID*,,,,0.50,,,,,,
-BEEF BONE FREE MEAT*,beef,,,25.75,,,,,,
-BEEF MEAT WITH BONE*,,,,17.96,,,,,,
-BUFFALO BONE FREE MEAT*,,,,78.80,,,,,,
-BUTTER*,butter,,,8.48,,,,,,
-CREAM,cream,,,5.45,,,,,,
-MASCARPONE,mascarpone,,,5.70,,,,,,
-MOZZARELLA,mozzarella,,,8.20,,,,,,
-RICOTTA,ricotta,,,3.40,,,,,,
-STRACCHINO,stracchino,,,4.92,,,,,,
-ASIAGO,asiago,,,10.24,,,,,,
-CAMEMBERT,camembert,,,7.55,,,,,,
-CEDDAR,cheddar,,,11.21,,,,,,
-CHEESE,,,,8.93,,,,,,
-CHEESE SEMI-HARD,,,,8.65,,,,,,
-EMMENTAL,emmental,,,8.20,,,,,,
-GOAT CHEESE,"goat,cheese",,,8.35,,,,,,
-GRANA PADANO,grana padano,,,15.34,,,,,,
-PARMIGIANO REGGIANO,parmigiano or parmesan,,,12.54,,,,,,
-PECORINO,pecorino,,,17.15,,,,,,
-MEALWORMS*,,,,2.84,,,,,,
-EGGS*,eggs,eggs,,3.20,,,,,,
-HONEY*,honey,honey,,1.74,,,,,,
-KANGAROO MEAT*,,,,4.10,,,,,,
-LAMB BONE FREE MEAT*,lamb,,,25.23,,,,,,
-LAMB MEAT WITH BONE*,,,,16.70,,,,,,
-BUFFALO MILK,,,,3.57,,,,,,
-COW MILK,milk,,,1.31,,,,,,
-GOAT MILK,,,,1.44,,,,,,
-PORK BONE FREE MEAT*,pork,pork,,5.72,,,,,,
-BACON,bacon,,,4.03,,,,,,
-NECK,,,,4.03,,,,,,
-PORK HAM,ham,,,7.95,,,,,,
-PORK SAUSAGES,"sausage,pork",sausage,,17.94,,,,,,
-PORK MEAT WITH BONE*,,,,3.44,,,,,,
-CHICKEN BONE FREE MEAT,chicken,chicken,,3.68,,,,,,
-EMU BONE FREE MEAT,,,,1.50,,,,,,
-DUCK MEAT BONE FREE*,duck,duck,,4.10,,,,,,
-TURKEY MEAT BONE FREE,turkey,turkey,,4.08,,,,,,
-CHICKEN MEAT WITH BONE,,,,2.82,,,,,,
-DUCK MEAT WITH BONE*,,,,2.07,,,,,,
-TURKEY MEAT WITH BONE,,,,2.13,,,,,,
-RABBIT MEAT WITH BONE*,,,,4.31,,,,,,
-SNAILS*,,,,0.73,,,,,,
-YOGURT FLAVOURED**,,,,2.85,,,,,,
-YOGURT LACTOSE FREE,,,,3.47,,,,,,
-YOGURT WHITE,,,,1.69,,,,,,
-COFFEE GREEN*,,,,0.49,,,,,,
-DATE,,,,0.60,,,,,,
-RAISIN,raisin,raisin,,0.81,,,,,,
-EXOTIC FRUIT (G),,,,2.43,,,,,,
-RASPBERRY (G),,,,7.35,,,,,,
-STRAWBERRY (G),,,,2.88,,,,,,
-AVOCADO (I),,,,1.09,,,,,,
-BANANA (I),,,,0.82,,,,,,
-COCONUT (I),coconut,,,1.78,,,,,,
-EXOTIC FRUIT (I),,,,2.43,,,,,,
-PINEAPPLE (I),,,,0.55,,,,,,
-POMEGRANATE (I),,,,1.17,,,,,,
-STRAWBERRY (I),,,,0.84,,,,,,
-MELON (g)*,,,,1.43,,,,,,
-CLEMENTINE,clementines,,,0.41,,,,,,
-LEMON,lemons,,juice,0.22,,,,,,
-LIME,limes,,juice,0.22,,,,,,
-MANDARIN,,,,0.45,,,,,,
-ORANGE,oranges,,juice,0.30,,,,,,
-POMELO,,,,0.51,,,,,,
-TANGERIN,tangerines,,,0.38,,,,,,
-APPLE,apples,,juice,0.25,,,,,,
-APRICOT,apricots,,juice,0.30,,,,,,
-AVOCADO,avocados,,,0.54,,,,,,
-BANANA,bananas,,,0.34,,,,,,
-CARROB,,,,1.10,,,,,,
-CHERRY,cherries,,,0.46,,,,,,
-FIG,figs,,,0.26,,,,,,
-GRAPES,grapes,,juice,0.31,,,,,,
-GUAVA,guava,,juice,0.28,,,,,,
-KIWI,kiwi,,juice,0.49,,,,,,
-MANGO,mango,,juice,0.31,,,,,,
-MELON,melon,,water,0.61,,,,,,
-PEACH,peach,,juice,0.39,,,,,,
-PEAR,pears,,juice,0.27,,,,,,
-PINEAPPLE,pineapple,fruit,juice,0.28,,,,,,
-PLUM,plums,,juice,0.26,,,,,,
-POMEGRANATE,pomegranate,,juice,0.32,,,,,,
-ROCKMELON,,,,0.39,,,,,,
-WATERMELON,watermelon,,juice,0.52,,,,,,
-OLIVES,olives,,,0.64,,,,,,
-BLACKBERRY,blackberries,,juice,0.42,,,,,,
-BLUEBERRY,blueberries,,juice,0.78,,,,,,
-CRANBERRY,cranberries,,juice,0.87,,,,,,
-CURRANT,currants,,,0.64,,,,,,
-GOOSEBERRY,,,,0.84,,,,,,
-RASPBERRY,raspberries,,juice,0.63,,,,,,
-STRAWBERRY,strawberries,,juice,0.61,,,,,,
-BARLEY,,,,0.48,,,,,,
-MAIZE,,,,0.48,,,,,,
-MILLET,,,,0.86,,,,,,
-OAT,,,,0.67,,,,,,
-QUINOA,,,,0.97,,,,,,
-RYE,,,,0.38,,,,,,
-SORGHUM,,,,0.88,,,,,,
-WHEAT,,,,0.57,,,,,,
-BEAN,,,,0.43,,,,,,
-CHICKPEA,chickpea,,,0.77,,,,,,
-COWPEA,,,,0.49,,,,,,
-GREEN BEAN (fresh),,,,0.52,,,,,,
-LENTIL,lentil,,,1.03,,,,,,
-PEA,pea,,frozen,0.45,,,,,,
-SOYBEAN,,,,0.56,,,,,,
-GREEN BEAN (fresh) (g)*,,,,0.28,,,,,,
-MUSHROOM*,mushroom,,,2.06,,,,,,
-ALMOND,almond,,milk,1.88,,,,,,
-CASHEW NUT,cashew,,,1.38,,,,,,
-CHESTNUT,chestnut,,,0.44,,,,,,
-HAZELNUT,hazelnut,,,1.11,,,,,,
-MIXED NUTS,,,,0.47,,,,,,
-PALM NUT,palm nut,,,0.80,,,,,,
-PEANUT,peanut,,oil,0.83,,,,,,
-PISTACHIO,pistachio,,,1.60,,,,,,
-WALNUT,walnut,,,2.06,,,,,,
-RICE*,rice,,,2.19,,,,,,
-RAPE SEED,,,,0.78,,,,,,
-SESAM SEED,,,,0.88,,,,,,
-SUNFLOWER SEED,,,,1.16,,,,,,
-CHILLY,,,,0.80,,,,,,
-GINGER,ginger,,,0.88,,,,,,
-POTATO,potato,,sweet,0.24,,,,,,
-STARCHY ROOTS,,,,0.29,,,,,,
-SWEET POTATO,sweet potato,,,0.27,,,,,,
-CUCUMBER (G),,,,2.55,,,,,,
-GERKIN (G),,,,2.12,,,,,,
-LETTUCE (G),,,,2.67,,,,,,
-PEPPER (G),,,,3.73,,,,,,
-TOMATO (G),,,,2.43,,,,,,
-CUCUMBER (g),,,,0.32,,,,,,
-EGGPLANT (g),,,,2.90,,,,,,
-PEPPER (g),,,,1.18,,,,,,
-TOMATO (g),,,,0.91,,,,,,
-ZUCCHINI (g),,,,1.77,,,,,,
-ASPARAGUS,asparagus,,,0.83,,,,,,
-CABAGGE,cabbage,,,0.23,,,,,,
-LETTUCE,lettuce,,,0.41,,,,,,
-SPINACH,spinach,,,0.34,,,,,,
-BEETROOT,beetroot,,,0.25,,,,,,
-CARROT,carrot,,juice,0.24,,,,,,
-GARLIC,garlic,,,0.71,,,,,,
-ONION,onions,,,0.22,,,,,,
-RADISH,radish,,,0.15,,,,,,
-SWEDE,swede,,,0.29,,,,,,
-TURNIP,turnip,,,0.35,,,,,,
-ARTICHOKE,artichoke,,,0.33,,,,,,
-BROCCOLI,broccoli,,,0.57,,,,,,
-CAULIFLOWER,cauliflower,,,0.31,,,,,,
-CELERY,celery,,,0.32,,,,,,
-CUCUMBER,cucumber,,,0.27,,,,,,
-EGGPLANT,aubergine,,,0.19,,,,,,
-FENNEL,fennel,,,0.48,,,,,,
-GERKIN,gherkin,,,0.21,,,,,,
-PEPPER,"pepper,red",,,0.65,,,,,,
-PUMPKIN,pumpkin,,,0.24,,,,,,
-TOMATO,tomato,fruit,,0.45,,,,,,
-VEGETABLES,,,,0.54,,,,,,
-ZUCCHINI,courghettes,,,0.70,,,,,,
-ALFONSINO,,,,3.49,,,,,,
-ANCHOVY,anchov,,,0.82,,,,,,
-ANGLERFISH,,,,12.29,,,,,,
-CARP,carp,fish,,1.76,,,,,,
-CATFISH,,,,8.93,,,,,,
-COD,cod,fish,,3.08,,,,,,
-DIAMOND FISH,,,,6.02,,,,,,
-EEL,,,,3.88,,,,,,
-FISH MIXED,,,,4.99,,,,,,
-FLATFISH,,,,6.41,,,,,,
-FLATHEAD,,,,2.56,,,,,,
-FORK BEARD,,,,8.01,,,,,,
-HADDOCK,haddock,fish,,3.10,,,,,,
-HAKE,hake,fish,,10.40,,,,,,
-HERRING,,,,1.24,,,,,,
-LING,,,,6.45,,,,,,
-MACKEREL,mackerel,fish,,1.80,,,,,,
-MEGRIM,,,,14.15,,,,,,
-PILCHARD,,,,1.10,,,,,,
-PLAICE,plaice,fish,,6.13,,,,,,
-POLLOCK,pollock,fish,,1.40,,,,,,
-POMFRET,,,,6.63,,,,,,
-PORBEAGLE,,,,11.44,,,,,,
-RHOMBUS,,,,8.41,,,,,,
-ROCK FISH,,,,6.94,,,,,,
-SALMON,salmon,fish,,3.37,,,,,,
-SARDINE,sardine,fish,,0.90,,,,,,
-SEA-BASS,bass,fish,,3.60,,,,,,
-SHARK,,,,11.44,,,,,,
-SOLE,sole,fish,,5.40,,,,,,
-SWARDFISH,,,,12.84,,,,,,
-TROUT,,,,4.20,,,,,,
-TUNA,tuna,fish,,3.68,,,,,,
-TURBOT,turbot,fish,,14.51,,,,,,
-WHITING,,,,2.66,,,,,,
-COD (F),,,,3.03,,,,,,
-FISH STICK (F),,,,2.26,,,,,,
-HADDOCK (F),,,,3.72,,,,,,
-HERRING (F),,,,1.30,,,,,,
-MACKEREL (F),,,,0.99,,,,,,
-MIXED FISH (F),,,,1.04,,,,,,
-POLLOCK (F),,,,0.90,,,,,,
-POLLOCK STICK (F),,,,2.14,,,,,,
-SALMON (F),,,,1.61,,,,,,
-SOLE (F),,,,14.28,,,,,,
-TROUT (F),,,,4.38,,,,,,
-TUNA (F),,,,2.64,,,,,,
-COD FISH STICK,,,,2.14,,,,,,
-HAKE FISH STICK,,,,2.14,,,,,,
-MAKEREL FISH STICK,,,,1.02,,,,,,
-TUNA IN CAN,"tuna,can",,,2.10,,,,,,
-BARNACLE,,,,2.30,,,,,,
-KRILL,,,,5.54,,,,,,
-LOBSTER,lobster,,,20.25,,,,,,
-MUSSELS,mussels,,,0.46,,,,,,
-CUTTLEFISH,,,,5.05,,,,,,
-OCTOPUS,octopus,,,5.80,,,,,,
-SQUID,squid,,,6.91,,,,,,
-PRAWNS/SHRIMPS,prawn or shrimp,,,7.04,,,,,,
-OCTOPUS (F),,,,7.88,,,,,,
-PRAWNS/SHRIMPS (F),,,,15.07,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
+Food commodity ITEM,Product contains,Sector contains,Product not contains,Carbon Footprint kg CO2eq/kg or l of food ITEM
+BEER IN CAN,,,,0.69
+BEER IN GLASS,,,,0.96
+BEER MODULAR CAN,,,,0.53
+CHOCOLATE OR CREAM FILLED COOKIES**,,,,1.53
+SIMPLE COOKIES**,,,,1.39
+MINERAL WATER*,,,,0.49
+BREAD MULTICEREAL**,multi or grain,bread,,0.7
+BREAD PLAIN**,plain,bread,,0.89
+BREAD WHOLE**,whole or brown,bread,,0.77
+BREAD FROZEN (F)*,frozen,bread,,1.31
+CORNFLAKES*,,cereal,,2.64
+DARK CHOCOLATE,"chocolate,dark",,,2.71
+MILK CHOCOLATE,"chocolate,milk",,,3.6
+COFFEE GROUND,,,,5.13
+COFFEE PARCHMENT,,,,8.29
+COFFEE DRIP FILTERED (L),,,,0.6
+COFFEE SOLUBLE POWDER (L),,,,0.33
+ESPRESSO (L),,,,0.55
+FLAVORED CRACKERS**,,,,0.93
+PLAIN CRACKERS**,,,,1.35
+WHOLEGRAIN CRACKERS**,,,,0.97
+CRISPBREAD**,,,,1.35
+KETCHUP,ketchup,,,1.46
+MAYONNAISE,mayonnaise,,,2.04
+TEMPE',,,,1.1
+EGG PASTA*,,,,3.15
+RASPBERRIES (F)*,"raspberries,frozen",,juice,1.18
+APPLE JUICE (I),"apple,juice",,,2.84
+BLUEBERRY JUICE (I),"blueberry,juice",,,3
+CRANBERRY JUICE (I),"cranberry,juice",,,2.88
+FIG JUICE (I),"fig,juice",,,3.2
+KIWI JUICE (I),"kiwi,juice",,,2.84
+MANGO JUICE (I),"mango,juice",,,2.96
+PINEAPPLE JUICE (I),"pineapple,juice",,,2.78
+STRAWBERRY JUICE (I),"strawberry,juice",,,2.68
+ORANGE JUICE,"orange,juice",,,0.46
+PEAR JUICE,"pear,juice",,,0.49
+BUCKWHEAT FLOUR,,,,1.96
+DURUM WHEAT,,,,0.47
+GRAHAM FLOUR,,,,0.47
+MAIZE FLOUR,,,,1.31
+MILLET FLOUR,,,,1.37
+OAT MEAL,,,,0.87
+SORGHUM FLOUR,,,,1.33
+WHEAT PLAIN FLOUR,,,,0.52
+WHOLE WHEAT FLOUR,,,,0.36
+CHOCOLATE,,,,6.6
+ICE CREAM,,,,1.02
+VANILLA,,,,4.3
+AZUKI BEAN FLOUR,,,,1.32
+MUNG BEAN FLOUR,,,,1.49
+SOY MEAL,,,,0.62
+BEANS IN CAN,baked beans,,,0.11
+GREEN BEANS IN CAN,"green beans,can",,,1.45
+BEANS (F),,,,1.77
+GREEN BEANS (F),beans,,baked,2.74
+MARGARINE*,margarine,,,1.39
+ALMOND COVERED WITH CHOCOLATE,,,,4.8
+HAZELNUT COVERED WITH CHOCOLATE,,,,3.43
+ALMOND PASTE,,,,2.98
+HAZELNUT CREAM,,,,2.71
+HAZELNUT PASTE,,,,1.69
+PEANUT BUTTER,,,,1.15
+PEANUT PASTE,,,,1.84
+OLIVE OIL,olive oil,,,3.27
+PALM OIL,palm oil,,,2.43
+PEANUT OIL,peanut oil,,,2.9
+RAPESEED OIL,rapeseed oil,,,1.79
+SOYBEAN OIL,soybean oil,,,1.79
+SUNFLOWER OIL,sunflower oil,,,0.98
+PASTA*,,"food cupboard,pasta",,1.21
+PESTO,pesto,sauce,,2.71
+PESTO WITHOUT GARLIC,,,,2.72
+BEET SUGAR,,,,0.94
+CANE SUGAR,,,,0.62
+CAKES AND CROISSANT**,,,,2.14
+COCOA CAKES AND CROISSANT**,,,,1.94
+TOMATO CHOPPED,"tomato,chopped",,,1.47
+TOMATO PEELED,,,,1.3
+TOMATO PUREE,tomato puree,,,1.03
+TOMATO & BASIL,,,,1.14
+TOMATO ARRABBIATA,,,,1.24
+CARROTS CANNED,,,,1.6
+CORN CANNED,,,,1.36
+CARROTS (F),,,,0.27
+ZUCCHINI (F),,,,1.35
+SOY CREAM*,,,,1.62
+ALMOND MILK,"milk,almond",,,0.42
+COCONUT MILK,"milk,coconut",,,0.41
+RICE MILK,"milk,rice",,,0.66
+SOY MILK,"milk,soy",,,0.78
+QUORNE,,quorn,,2.5
+SOY BURGER,,,,1.48
+TOFU,,,,2.27
+SOY YOGURT*,,,,1.36
+WINE RED,,,,0.87
+WINE WHITE,,,,0.44
+YEAST COMPRESSED*,,,,0.82
+YEAST DRIED*,,,,3.29
+YEAST LIQUID*,,,,0.5
+BEEF BONE FREE MEAT*,beef,,vegetarian,25.75
+BEEF MEAT WITH BONE*,,,,17.96
+BUFFALO BONE FREE MEAT*,,,,78.8
+BUTTER*,butter,,,8.48
+CREAM,cream,,,5.45
+MASCARPONE,mascarpone,,,5.7
+MOZZARELLA,mozzarella,,,8.2
+RICOTTA,ricotta,,,3.4
+STRACCHINO,stracchino,,,4.92
+ASIAGO,asiago,,,10.24
+CAMEMBERT,camembert,,,7.55
+CEDDAR,cheddar,,,11.21
+CHEESE,,,,8.93
+CHEESE SEMI-HARD,,,,8.65
+EMMENTAL,emmental,,,8.2
+GOAT CHEESE,"goat,cheese",,,8.35
+GRANA PADANO,grana padano,,,15.34
+PARMIGIANO REGGIANO,parmigiano or parmesan,,,12.54
+PECORINO,pecorino,,,17.15
+MEALWORMS*,,,,2.84
+EGGS*,eggs,eggs,,3.2
+HONEY*,honey,honey,,1.74
+KANGAROO MEAT*,,,,4.1
+LAMB BONE FREE MEAT*,lamb,,vegetarian,25.23
+LAMB MEAT WITH BONE*,,,,16.7
+BUFFALO MILK,,,,3.57
+COW MILK,milk,,,1.31
+GOAT MILK,,,,1.44
+PORK BONE FREE MEAT*,pork,pork,vegetarian,5.72
+BACON,bacon,,,4.03
+NECK,,,,4.03
+PORK HAM,ham,,vegetarian,7.95
+PORK SAUSAGES,"sausage,pork",sausage,vegetarian,17.94
+PORK MEAT WITH BONE*,,,,3.44
+CHICKEN BONE FREE MEAT,chicken,chicken,vegetarian,3.68
+EMU BONE FREE MEAT,,,,1.5
+DUCK MEAT BONE FREE*,duck,duck,vegetarian,4.1
+TURKEY MEAT BONE FREE,turkey,turkey,vegetarian,4.08
+CHICKEN MEAT WITH BONE,,,,1
+DUCK MEAT WITH BONE*,,,,2.07
+TURKEY MEAT WITH BONE,,,,2.13
+RABBIT MEAT WITH BONE*,,,,4.31
+SNAILS*,,,,0.73
+YOGURT FLAVOURED**,,,,2.85
+YOGURT LACTOSE FREE,,,,3.47
+YOGURT WHITE,,,,1.69
+COFFEE GREEN*,,,,0.49
+DATE,,,,0.6
+RAISIN,raisin,raisin,,0.81
+EXOTIC FRUIT (G),,,,2.43
+RASPBERRY (G),,,,7.35
+STRAWBERRY (G),,,,2.88
+AVOCADO (I),,,,1.09
+BANANA (I),,,,0.82
+COCONUT (I),coconut,,,1.78
+EXOTIC FRUIT (I),,,,2.43
+PINEAPPLE (I),,,,0.55
+POMEGRANATE (I),,,,1.17
+STRAWBERRY (I),,,,0.84
+MELON (g)*,,,,1.43
+CLEMENTINE,clementines,,,0.41
+LEMON,lemons,,juice,0.22
+LIME,limes,,juice,0.22
+MANDARIN,,,,0.45
+ORANGE,oranges,,juice,0.3
+POMELO,,,,0.51
+TANGERIN,tangerines,,,0.38
+APPLE,apples,,juice,0.25
+APRICOT,apricots,,juice,0.3
+AVOCADO,avocados,,,0.54
+BANANA,bananas,,,0.34
+CARROB,,,,1.1
+CHERRY,cherries,,,0.46
+FIG,figs,,,0.26
+GRAPES,grapes,,juice,0.31
+GUAVA,guava,,juice,0.28
+KIWI,kiwi,,juice,0.49
+MANGO,mango,,juice,0.31
+MELON,melon,,water,0.61
+PEACH,peach,,juice,0.39
+PEAR,pears,,juice,0.27
+PINEAPPLE,pineapple,fruit,juice,0.28
+PLUM,plums,,juice,0.26
+POMEGRANATE,pomegranate,,juice,0.32
+ROCKMELON,,,,0.39
+WATERMELON,watermelon,,juice,0.52
+OLIVES,olives,,,0.64
+BLACKBERRY,blackberries,,juice,0.42
+BLUEBERRY,blueberries,,juice,0.78
+CRANBERRY,cranberries,,juice,0.87
+CURRANT,currants,,,0.64
+GOOSEBERRY,,,,0.84
+RASPBERRY,raspberries,,juice,0.63
+STRAWBERRY,strawberries,,juice,0.61
+BARLEY,,,,0.48
+MAIZE,,,,0.48
+MILLET,,,,0.86
+OAT,,,,0.67
+QUINOA,,,,0.97
+RYE,,,,0.38
+SORGHUM,,,,0.88
+WHEAT,,,,0.57
+BEAN,,,,0.43
+CHICKPEA,chickpea,,,0.77
+COWPEA,,,,0.49
+GREEN BEAN (fresh),,,,0.52
+LENTIL,lentil,,,1.03
+PEA,pea,,frozen,0.45
+SOYBEAN,,,,0.56
+GREEN BEAN (fresh) (g)*,,,,0.28
+MUSHROOM*,mushroom,,,2.06
+ALMOND,almond,,milk,1.88
+CASHEW NUT,cashew,,,1.38
+CHESTNUT,chestnut,,,0.44
+HAZELNUT,hazelnut,,,1.11
+MIXED NUTS,,,,0.47
+PALM NUT,palm nut,,,0.8
+PEANUT,peanut,,oil,0.83
+PISTACHIO,pistachio,,,1.6
+WALNUT,walnut,,,2.06
+RICE*,rice,,,2.19
+RAPE SEED,,,,0.78
+SESAM SEED,,,,0.88
+SUNFLOWER SEED,,,,1.16
+CHILLY,,,,0.8
+GINGER,ginger,,,0.88
+POTATO,potato,,sweet,0.24
+STARCHY ROOTS,,,,0.29
+SWEET POTATO,sweet potato,,,0.27
+CUCUMBER (G),,,,2.55
+GERKIN (G),,,,2.12
+LETTUCE (G),,,,2.67
+PEPPER (G),,,,3.73
+TOMATO (G),,,,2.43
+CUCUMBER (g),,,,0.32
+EGGPLANT (g),,,,2.9
+PEPPER (g),,,,1.18
+TOMATO (g),,,,0.91
+ZUCCHINI (g),,,,1.77
+ASPARAGUS,asparagus,,,0.83
+CABAGGE,cabbage,,,0.23
+LETTUCE,lettuce,,,0.41
+SPINACH,spinach,,,0.34
+BEETROOT,beetroot,,,0.25
+CARROT,carrot,,juice,0.24
+GARLIC,garlic,,,0.71
+ONION,onions,,,0.22
+RADISH,radish,,,0.15
+SWEDE,swede,,,0.29
+TURNIP,turnip,,,0.35
+ARTICHOKE,artichoke,,,0.33
+BROCCOLI,broccoli,,,0.57
+CAULIFLOWER,cauliflower,,,0.31
+CELERY,celery,,,0.32
+CUCUMBER,cucumber,,,0.27
+EGGPLANT,aubergine,,,0.19
+FENNEL,fennel,,,0.48
+GERKIN,gherkin,,,0.21
+PEPPER,"pepper,red",,,0.65
+PUMPKIN,pumpkin,,,0.24
+TOMATO,tomato,fruit,,0.45
+VEGETABLES,,,,0.54
+ZUCCHINI,courghettes,,,0.7
+ALFONSINO,,,,3.49
+ANCHOVY,anchov,,,0.82
+ANGLERFISH,,,,12.29
+CARP,carp,fish,,1.76
+CATFISH,,,,8.93
+COD,cod,fish,,3.08
+DIAMOND FISH,,,,6.02
+EEL,,,,3.88
+FISH MIXED,,,,4.99
+FLATFISH,,,,6.41
+FLATHEAD,,,,2.56
+FORK BEARD,,,,8.01
+HADDOCK,haddock,fish,,3.1
+HAKE,hake,fish,,10.4
+HERRING,,,,1.24
+LING,,,,6.45
+MACKEREL,mackerel,fish,,1.8
+MEGRIM,,,,14.15
+PILCHARD,,,,1.1
+PLAICE,plaice,fish,,6.13
+POLLOCK,pollock,fish,,1.4
+POMFRET,,,,6.63
+PORBEAGLE,,,,11.44
+RHOMBUS,,,,8.41
+ROCK FISH,,,,6.94
+SALMON,salmon,fish,,3.37
+SARDINE,sardine,fish,,0.9
+SEA-BASS,bass,fish,,3.6
+SHARK,,,,11.44
+SOLE,sole,fish,,5.4
+SWARDFISH,,,,12.84
+TROUT,,,,4.2
+TUNA,tuna,fish,,3.68
+TURBOT,turbot,fish,,14.51
+WHITING,,,,2.66
+COD (F),,,,3.03
+FISH STICK (F),,,,2.26
+HADDOCK (F),,,,3.72
+HERRING (F),,,,1.3
+MACKEREL (F),,,,0.99
+MIXED FISH (F),,,,1.04
+POLLOCK (F),,,,0.9
+POLLOCK STICK (F),,,,2.14
+SALMON (F),,,,1.61
+SOLE (F),,,,14.28
+TROUT (F),,,,4.38
+TUNA (F),,,,2.64
+COD FISH STICK,,,,2.14
+HAKE FISH STICK,,,,2.14
+MAKEREL FISH STICK,,,,1.02
+TUNA IN CAN,"tuna,can",,,2.1
+BARNACLE,,,,2.3
+KRILL,,,,5.54
+LOBSTER,lobster,,,20.25
+MUSSELS,mussels,,,0.46
+CUTTLEFISH,,,,5.05
+OCTOPUS,octopus,,,5.8
+SQUID,squid,,,6.91
+PRAWNS/SHRIMPS,prawn or shrimp,,,7.04
+OCTOPUS (F),,,,7.88
+PRAWNS/SHRIMPS (F),,,,15.07

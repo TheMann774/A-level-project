@@ -1,5 +1,5 @@
 import pandas as pd
-from Heroku_functions import postgres_connect
+from Heroku_functions import postgres_connect, postgres_execute
 
 
 def heroku_upload():
@@ -25,5 +25,9 @@ def heroku_upload():
 
 
 data = pd.read_csv('SuEatableLife_Food_Fooprint_database.csv').iloc[:324, :5]
+del_query = '''
+DELETE FROM emissions_stats
+'''
+postgres_execute(del_query)
 heroku_upload()
 

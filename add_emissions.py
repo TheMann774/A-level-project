@@ -47,13 +47,19 @@ controlled_food = ['milk', 'egg', 'cream', 'yoghurt', 'beef', 'chicken', 'lamb',
 
 
 def get_country_coords(country):
-    url = 'http://nominatim.openstreetmap.org/search?country=' + country + '&format=json&polygon=0'
-    response = requests.get(url).json()[0]
+    try:
+        url = 'http://nominatim.openstreetmap.org/search?country=' + country + '&format=json&polygon=0'
+        response = requests.get(url).json()[0]
+    except:
+        return None
     return [float(response.get(key)) for key in ['lat', 'lon']]
 
 
 def get_countries_distance(a, b):
-    return float(str(geopy.distance.distance(get_country_coords(a), get_country_coords(b)))[:-3])
+    try:
+        return float(str(geopy.distance.distance(get_country_coords(a), get_country_coords(b)))[:-3])
+    except:
+        return 0
 
 
 def get_travel_emissions(dist, mass, transport_type, temp_controlled):
@@ -86,16 +92,16 @@ for index, row in result.iterrows():
     a = [x.strip().replace('.', '') for x in a]
     for i in range(len(a)):
         for e in range(i, min(len(a), i + 5)):
-            x = str.lower(' '.join(a[i:e + 1]))
-            if x in countries:
-                if x not in product_countries:
-                    product_countries.append(x)
-            elif x in country_swaps.keys():
-                if country_swaps[x] not in product_countries:
-                    product_countries.append(country_swaps[x])
+            term = str.lower(' '.join(a[i:e + 1]))
+            if term in countries:
+                if term not in product_countries:
+                    product_countries.append(term)
+            elif term in country_swaps.keys():
+                if country_swaps[term] not in product_countries:
+                    product_countries.append(country_swaps[term])
     if product_countries:
         # Get distance to UK for each country the product could have been produced in and average the data
-        average_dist = sum([get_countries_distance(x, 'United Kingdom') for x in product_countries]) / float(
+        average_dist = sum([get_countries_distance(x, 'united kingdom') for x in product_countries]) / float(
             len(product_countries))
         # Check if product is transported by sea or air, and whether it needs to be temperature controlled
         transport_type, temp_controlled = 'sea', False

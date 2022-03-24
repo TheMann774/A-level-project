@@ -472,27 +472,32 @@ for i in range(min(num_sectors, len(result))):
                 print()"""
 
             new_products = new_products.append(new_product, ignore_index=True)
-    driver.close()
-    heroku_upload()
-    query_text = '''
-    DELETE FROM sainsburys_products
-    WHERE sector_id = '**sector_id**'
-    AND date_updated <> '**date**'
-    '''.replace('**date**', date.today().strftime('%Y-%m-%d')).replace('**sector_id**', sector['uuid'])
-    _ = postgres_execute(query_text)
 
-    query_text = '''
-    UPDATE sainsburys_sectors
-    SET products_scraped = 1, num_products = **num_products**, date_updated = '**date**'
-    WHERE path = '**path**'
-    '''.replace('**path**', sector['path']).replace(
-        '**num_products**', str(len(new_products))).replace('**date**', date.today().strftime('%Y-%m-%d'))
-    _ = postgres_execute(query_text)
+        heroku_upload()
+        query_text = '''    
+        DELETE FROM sainsburys_products
+        WHERE sector_id = '**sector_id**'
+        AND date_updated <> '**date**'
+        '''.replace('**date**', date.today().strftime('%Y-%m-%d')).replace('**sector_id**', sector['uuid'])
+        _ = postgres_execute(query_text)
 
-    sql_text = '''UPDATE sainsburys_sectors
-    SET real_date_updated = CAST(date_updated AS DATE)'''
-    _ = postgres_execute(sql_text)
+        query_text = '''
+        UPDATE sainsburys_sectors
+        SET products_scraped = 1, num_products = **num_products**, date_updated = '**date**'
+        WHERE path = '**path**'
+        '''.replace('**path**', sector['path']).replace(
+            '**num_products**', str(len(new_products))).replace('**date**', date.today().strftime('%Y-%m-%d'))
+        _ = postgres_execute(query_text)
 
-    sql_text = '''UPDATE sainsburys_products
-    SET real_date_updated = CAST(date_updated AS DATE)'''
-    _ = postgres_execute(sql_text)
+        sql_text = '''UPDATE sainsburys_sectors
+        SET real_date_updated = CAST(date_updated AS DATE)'''
+        _ = postgres_execute(sql_text)
+
+        sql_text = '''UPDATE sainsburys_products
+        SET real_date_updated = CAST(date_updated AS DATE)'''
+        _ = postgres_execute(sql_text)
+
+    try:
+        driver.close()
+    except:
+        pass
