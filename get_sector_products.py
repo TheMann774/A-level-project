@@ -91,7 +91,7 @@ WHERE required = 1
 ORDER BY products_scraped ASC, real_date_updated ASC, num_products DESC
 '''
 result = postgres_execute(query_text)
-num_sectors = 5
+num_sectors = 5 # Number of sectors to update at a time
 
 new_products = pd.DataFrame(columns=["name",
                                      "date_updated",
@@ -117,8 +117,9 @@ new_products = pd.DataFrame(columns=["name",
                                      "recycling"])
 
 for i in range(min(num_sectors, len(result))):
-    new_products = new_products[0:0]
+    new_products = new_products[0:0] # Empty DataFrame
     sector = result.iloc[i]
+    # Get HTML of page:
     URL = sector['link']
     if 'https://www.sainsburys.co.uk' not in URL:
         URL = 'https://www.sainsburys.co.uk/' + URL
@@ -126,7 +127,7 @@ for i in range(min(num_sectors, len(result))):
     page_soup = bs(page.content, "html.parser")
     pages_left = True
     all_products = []
-    while pages_left:
+    while pages_left: # Get all the products in the sector
         all_products += [x.h3.a['href'] for x in page_soup.find_all('div', class_='productNameAndPromotions')]
         if page_soup.find('li', class_='next') is None:
             pages_left = False
@@ -139,12 +140,14 @@ for i in range(min(num_sectors, len(result))):
             page = requests.get(URL)
             page_soup = bs(page.content, "html.parser")
     if not len(all_products):
+        # Delete a sector if there are no products in the sector
         sql_text = '''
         DELETE FROM sainsburys_sectors
         WHERE path = '**path**'
         '''.replace('**path**', sector['path'])
         _ = postgres_execute(sql_text)
     else:
+        # Open each product and get the relevant data
         driver = initialise_chrome()
         print(sector['name'])
         for product in all_products:
@@ -152,6 +155,7 @@ for i in range(min(num_sectors, len(result))):
             counter = 0
             found = False
             while not found:
+                # Keep trying initialisation until successful or 3 tries have passed
                 if counter >= 2:
                     driver.close()
                     driver = initialise_chrome()
@@ -176,6 +180,7 @@ for i in range(min(num_sectors, len(result))):
                            'sector_id': sector['uuid'],
                            'price': page_soup.find('div', class_="pd__cost").div.text}
 
+            # Get price
             if '/' in new_product['price'] and 'kg' in new_product:
                 new_product['mass'] = 1
             if '£' in new_product['price']:
@@ -185,9 +190,11 @@ for i in range(min(num_sectors, len(result))):
                 new_product['price'] = float(
                     new_product['price'][:-1].replace(' ', '').replace('/', '').replace('kg', '')) / 100
 
+            # Get rating
             new_product['rating'] = float(
                 len(page_soup.find('div', class_='star-rating').find_all('path', class_="star-rating-icon--full")))
 
+            # Get num reviews
             try:
                 new_product['num_reviews'] = int(
                     page_soup.find('span', class_='pd__reviews__read').text.split('(')[1][:-1])
@@ -196,6 +203,7 @@ for i in range(min(num_sectors, len(result))):
 
             new_product['expiry_duration'] = 0
 
+            # Get vegetarian and vegan information:
             if len(page_soup.find_all(text=[re.compile('Not suitable for vegetarians', re.IGNORECASE),
                                             re.compile('Not vegetarian', re.IGNORECASE)])):
                 new_product['vegetarian'], new_product['vegan'] = 0, 0
@@ -211,6 +219,7 @@ for i in range(min(num_sectors, len(result))):
             else:
                 new_product['vegetarian'], new_product['vegan'] = 0, 0
 
+            # Get religious information
             new_product['religious_info'] = []
             if len(page_soup.find_all(text=re.compile('Kosher', re.IGNORECASE))):
                 new_product['religious_info'].append(
@@ -220,11 +229,13 @@ for i in range(min(num_sectors, len(result))):
                     page_soup.find(text=re.compile('Halal', re.IGNORECASE)).parent.text)
             new_product['religious_info'] = str(new_product['religious_info'])
 
+            # Get organic information
             if len(page_soup.find_all(text=re.compile('Organic', re.IGNORECASE))):
                 new_product['organic'] = 1
             else:
                 new_product['organic'] = 0
 
+            # Get product description
             product_description = []
             description_heading = page_soup.find('h3', text=re.compile('Description', re.IGNORECASE))
             if description_heading:
@@ -240,6 +251,7 @@ for i in range(min(num_sectors, len(result))):
                         flag = True
             new_product['description'] = '\n'.join(product_description)
 
+            # Get product nutritional information
             new_product['nutrition_100'] = {}
             col100 = -1
             colserving = -1
@@ -290,6 +302,7 @@ for i in range(min(num_sectors, len(result))):
                 print(e)
             new_product['nutrition_100'] = str(new_product['nutrition_100'])
 
+            # Get product servings
             new_product['pack_servings'] = 0
             servings = page_soup.find(text=re.compile("Contains .+ servings", re.IGNORECASE))
             if servings:
@@ -318,6 +331,7 @@ for i in range(min(num_sectors, len(result))):
                     except:
                         new_product['pack_servings'] = 0
 
+            # Get product mass
             new_product['mass'] = 0
             try:
                 new_product['mass'] = float(re.search("[0-9.]+", re.search(" [0-9.]+(g|ml)", page_soup.find('h1',
@@ -375,6 +389,7 @@ for i in range(min(num_sectors, len(result))):
                 except:
                     pass
 
+            # Get product ingredients
             try:
                 new_product['ingredients'] = [ingredient.text.replace(', ', '') for ingredient in
                                               page_soup.find('h3', text='Ingredients').parent.ul.find_all('li')]
@@ -387,6 +402,7 @@ for i in range(min(num_sectors, len(result))):
                     new_product['ingredients'] = []
             new_product['ingredients'] = str(new_product['ingredients'])
 
+            # Get product allergens
             try:
                 new_product['allergens'] = [ingredient.text.replace(', ', '') for ingredient in page_soup.find('h3',
                                                                                                                text=re.compile(
@@ -403,6 +419,7 @@ for i in range(min(num_sectors, len(result))):
                     new_product['allergens'] = []
             new_product['allergens'] = str(new_product['allergens'])
 
+            # Get product health information
             product_info = []
             health_heading = page_soup.find('h3', text=re.compile('Health', re.IGNORECASE))
             if health_heading:
@@ -418,6 +435,7 @@ for i in range(min(num_sectors, len(result))):
                         flag = True
             new_product['info'] = '\n'.join(product_info)
 
+            # Get product cooking information
             cooking_info = []
             prep_heading = page_soup.find('h3', text=re.compile('Preparation', re.IGNORECASE))
             if prep_heading:
@@ -433,6 +451,7 @@ for i in range(min(num_sectors, len(result))):
                         flag = True
             new_product['cook_info'] = '\n'.join(cooking_info)
 
+            # Get product country of origin
             product_origin = []
             origin_heading = page_soup.find('h3', text=re.compile('Country of Origin', re.IGNORECASE))
             if origin_heading:
@@ -451,6 +470,7 @@ for i in range(min(num_sectors, len(result))):
             else:
                 new_product['origin_country'] = '\n'.join(product_origin)
 
+            # Get product packaging information
             product_recycling = []
             packaging_heading = page_soup.find('h3', text=re.compile('Packaging', re.IGNORECASE))
             if packaging_heading:
@@ -473,6 +493,7 @@ for i in range(min(num_sectors, len(result))):
 
             new_products = new_products.append(new_product, ignore_index=True)
 
+        # Delete any old products from the current sector
         heroku_upload()
         query_text = '''    
         DELETE FROM sainsburys_products
@@ -481,6 +502,7 @@ for i in range(min(num_sectors, len(result))):
         '''.replace('**date**', date.today().strftime('%Y-%m-%d')).replace('**sector_id**', sector['uuid'])
         _ = postgres_execute(query_text)
 
+        # Update the sector just scraped in the sectors database
         query_text = '''
         UPDATE sainsburys_sectors
         SET products_scraped = 1, num_products = **num_products**, date_updated = '**date**'

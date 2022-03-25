@@ -94,9 +94,11 @@ for depth in ['departments', 'aisles', 'shelf']:
             time.sleep(1)
     all_sectors = new_sectors
 
+#Get previous sectors already in sectors database
 query_text = '''SELECT path FROM sainsburys_sectors'''
 previous_paths = list(postgres_execute(query_text)['path'])
 
+# Delete any old sectors which no longer exist
 for path in previous_paths:
     if path not in list(leaf_sectors['path']):
         query_text = '''SELECT uuid from sainsburys_sectors 
@@ -110,6 +112,7 @@ for path in previous_paths:
             WHERE sector_id=**sector_id**'''.replace('**sector_id**', sector_id)
             _ = postgres_execute(query_text)
 
+# Add new sectors
 for index, sector in leaf_sectors.iterrows():
     if sector['path'] not in previous_paths:
         new_leafs = new_leafs.append(sector)

@@ -3,6 +3,7 @@ import pandas as pd
 
 
 def postgres_connect():
+    """Connect to the database"""
     PG_DBNAME = 'dflk6gukmji6li'
     PG_USER = 'xvfgvajqxphekv'
     PG_HOST = 'ec2-63-33-239-176.eu-west-1.compute.amazonaws.com'
@@ -22,6 +23,7 @@ def postgres_connect():
 
 
 def postgres_execute(sql_text):
+    """Execute an SQL query"""
     conn = postgres_connect()
     cur = conn.cursor()
     # rollback any errors
@@ -41,6 +43,7 @@ def postgres_execute(sql_text):
 
 
 def postgres_update(conn, sql_text, value, value2, value3, idval):
+    """Update a database"""
     if (conn is None) or (conn.closed == 1):
         conn = postgres_connect()
     cur = conn.cursor()

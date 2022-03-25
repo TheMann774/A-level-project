@@ -1,7 +1,9 @@
+# import relevant modules
 import requests
 from Heroku_functions import postgres_execute
 import geopy.distance
 
+# List of countries in format supported by geopy:
 countries = ['andorra', 'united arab emirates', 'afghanistan', 'antigua and barbuda', 'anguilla', 'albania', 'armenia',
              'angola', 'antarctica', 'argentina', 'american samoa', 'austria', 'australia', 'aruba', 'aland islands',
              'azerbaijan', 'bosnia and herzegovina', 'barbados', 'bangladesh', 'belgium', 'burkina faso', 'bulgaria',
@@ -38,15 +40,20 @@ countries = ['andorra', 'united arab emirates', 'afghanistan', 'antigua and barb
              'city of the vatican', 'saint vincent and the grenadines', 'venezuela', 'british virgin islands',
              'united states virgin islands', 'vietnam', 'vanuatu', 'wallis and futuna', 'samoa', 'yemen', 'mayotte',
              'south africa', 'zambia', 'zimbabwe']
+# Some common alternative formats of countries:
 country_swaps = {'uk': 'united kingdom', 'england': 'united kingdom', 'scotland': 'united kingdom',
                  'usa': 'united states of america', 'ireland': 'republic of ireland'}
+# Emissions coefficients for various transportation types in format [ambient, chilled] measured in kg CO2 per kg per km:
 emissions = {'road': [0.2, 0.5], 'rail': [0.05, 0.06], 'sea': [0.01, 0.02], 'air': [1.13, 1.13]}
+# List of foods transported by air:
 air_food = ['green bean', 'sweetcorn', 'asparagus', 'pea', 'lime', 'avocado', 'spring onion', 'pineapple',
             'sweet potato', 'grape', 'beef', 'chicken', 'lamb', 'pork', 'turkey']
+# List of foods which are temperature controlled:
 controlled_food = ['milk', 'egg', 'cream', 'yoghurt', 'beef', 'chicken', 'lamb', 'pork', 'turkey', 'frozen']
 
 
 def get_country_coords(country):
+    """Get the coordinates of the centre of a given country using OpenStreetMap, returns [lat, lon] or None if not found"""
     try:
         url = 'http://nominatim.openstreetmap.org/search?country=' + country + '&format=json&polygon=0'
         response = requests.get(url).json()[0]
@@ -56,6 +63,7 @@ def get_country_coords(country):
 
 
 def get_countries_distance(a, b):
+    """Get the distance between two sets of coordinates in km, return 0 if error"""
     try:
         return float(str(geopy.distance.distance(get_country_coords(a), get_country_coords(b)))[:-3])
     except:
@@ -63,12 +71,14 @@ def get_countries_distance(a, b):
 
 
 def get_travel_emissions(dist, mass, transport_type, temp_controlled):
+    """Get the emissions of a transportation journey in kg CO2"""
     emission_coefficient = emissions[transport_type][int(temp_controlled)]
     return dist * mass * emission_coefficient / 1000
 
 
 location = 'united kingdom'
 
+# Get all products and their sector where emissions haven't been calculated
 product_query = '''
 SELECT sainsburys_products.*, sainsburys_sectors.name AS sector_name FROM sainsburys_products
 LEFT JOIN sainsburys_sectors
@@ -77,12 +87,14 @@ WHERE emissions IS NULL
 '''
 result = postgres_execute(product_query)
 
+# Get the data from emissions_stats
 links_query = '''
 SELECT product_contains, product_not_contains, sector_contains, emissions
 FROM emissions_stats
 '''
 links = postgres_execute(links_query)
 
+# Loop through products
 for index, row in result.iterrows():
     print(index)
     transport_emissions = -1
@@ -121,6 +133,7 @@ for index, row in result.iterrows():
     food_emissions = 0
     match = None
     valid = True
+    # Find food type which matches the product:
     for index2, row2 in links.iterrows():
         if list(row2).count('NaN') < 3:
             match_row = True
@@ -155,9 +168,9 @@ for index, row in result.iterrows():
 
     if valid and match:
         if row['mass']:
-            food_emissions = row['mass'] * links.iloc[match]['emissions']
+            food_emissions = row['mass'] * links.iloc[match]['emissions']  # Calculate food emissions
     if food_emissions and transport_emissions != -1:
-        result.iloc[index, -2] = round(food_emissions + transport_emissions, 3)
+        result.iloc[index, -2] = round(food_emissions + transport_emissions, 3)  # Update DataFrame
     else:
         if not food_emissions:
             print(row['name'])
@@ -165,6 +178,7 @@ for index, row in result.iterrows():
             print(row['origin_country'])
         result.iloc[index, -2] = 0
 
+    # Update database:
     sql_text = '''
     UPDATE sainsburys_products
     SET emissions = **emissions**
@@ -172,6 +186,8 @@ for index, row in result.iterrows():
     '''.replace('**emissions**', str(result.iloc[index, -2])).replace('**uuid**', result.iloc[index]['uuid'])
     _ = postgres_execute(sql_text)
 
+
+# Calculate metrics:
 sql_text = '''
 UPDATE sainsburys_products
 SET emissions_per_kg = emissions/mass
@@ -194,4 +210,3 @@ SET emissions_per_calorie = 1000*emissions/CAST(SUBSTRING(nutrition_100,
 WHERE POSITION('Energy' IN nutrition_100) > 0 AND mass > 0
 '''
 _ = postgres_execute(sql_text)
-
